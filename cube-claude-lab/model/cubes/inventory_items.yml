@@ -1,0 +1,108 @@
+cubes:
+  - name: inventory_items
+    sql_table: ANALYTICS_PROD.ECOMM.INVENTORY_ITEMS
+    public: false
+
+    joins:
+      - name: products
+        sql: "{CUBE}.PRODUCT_ID = {products}.ID"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+
+      - name: product_id
+        sql: PRODUCT_ID
+        type: number
+
+      - name: created_at
+        sql: CREATED_AT
+        type: time
+        description: "Timestamp when the inventory item was added to the system, useful for inventory aging and turnover analysis."
+        meta:
+          synonyms: [inventory date, received date, stock date]
+
+      - name: sold_at
+        sql: SOLD_AT
+        type: time
+        description: "Timestamp when this specific inventory item was sold, enabling inventory velocity and turnover calculations."
+        meta:
+          synonyms: [inventory sold date, sale date, sold date]
+
+      - name: cost
+        sql: COST
+        type: number
+        description: "The wholesale cost paid to acquire this specific inventory item from the supplier, used for calculating profit margins and cost of goods sold (COGS)."
+        meta:
+          synonyms: [cogs, inventory cost, item cost, unit cost]
+
+      - name: product_brand
+        sql: PRODUCT_BRAND
+        type: string
+        description: "The brand or manufacturer name of the product (e.g., Nike, Apple, Levi's). Key dimension for brand performance analysis."
+        meta:
+          synonyms: [brand name, label, make, manufacturer]
+
+      - name: product_category
+        sql: PRODUCT_CATEGORY
+        type: string
+        description: "The product category classification (e.g., Jeans, Sweaters, Accessories). Used for category-level sales and inventory analysis."
+        meta:
+          synonyms: [category, item category, merchandise category, product type]
+
+      - name: product_department
+        sql: PRODUCT_DEPARTMENT
+        type: string
+        description: "The high-level department the product belongs to (e.g., Men, Women, Kids). Primary dimension for departmental performance reporting."
+        meta:
+          synonyms: [business unit, department, division, section]
+
+      - name: product_name
+        sql: PRODUCT_NAME
+        type: string
+        description: "The full descriptive name of the product including brand, style, and key attributes."
+        meta:
+          synonyms: [item name, product description, product title, sku name]
+
+      - name: product_sku
+        sql: PRODUCT_SKU
+        type: string
+        description: "The unique Stock Keeping Unit identifier for inventory tracking and management."
+        meta:
+          synonyms: [item number, product code, sku, stock code, upc]
+
+      - name: product_distribution_center_id
+        sql: PRODUCT_DISTRIBUTION_CENTER_ID
+        type: number
+        description: "Identifier for the distribution center or warehouse where this inventory item is stored and shipped from."
+        meta:
+          synonyms: [dc id, fulfillment center, warehouse id]
+
+      - name: product_retail_price
+        sql: PRODUCT_RETAIL_PRICE
+        type: number
+        description: "The manufacturer suggested retail price (MSRP) for the product, representing the recommended selling price before any discounts."
+        meta:
+          synonyms: [list price, msrp, sticker price]
+
+    measures:
+      - name: average_cost
+        sql: COST
+        type: avg
+        description: "Average cost per item sold, useful for cost trend analysis and margin planning."
+        meta:
+          synonyms: [avg cost, mean cost, unit cost average]
+
+      - name: max_cost
+        sql: COST
+        type: max
+
+      - name: total_cost
+        sql: COST
+        type: sum
+        description: "Total cost of goods sold (COGS), representing the direct costs of inventory sold. Essential for profitability analysis."
+        meta:
+          synonyms: [cogs, cost of goods sold, direct costs, total cost of sales, total expense]

@@ -1,0 +1,34 @@
+views:
+  - name: sales
+    description: "Order-item level sales for an online apparel retailer, with customer, inventory and product detail. Ported from the Omni topic analytics_prod_ecomm__sales (Snowflake semantic view ANALYTICS_PROD.ECOMM.SALES)."
+    meta:
+      ai_context: >-
+        When generating SQL: 1) Always round monetary values to 2 decimal places,
+        2) Round percentages to 1 decimal place, 3) Exclude cancelled and returned
+        orders from revenue calculations unless specifically asked about returns,
+        4) Use appropriate date truncation for time-based analysis.
+
+    cubes:
+      - join_path: order_items
+        includes: "*"
+        excludes:
+          - id
+
+      - join_path: order_items.users
+        prefix: true
+        includes: "*"
+        excludes:
+          - id
+
+      - join_path: order_items.inventory_items
+        prefix: true
+        includes: "*"
+        excludes:
+          - id
+          - product_id
+
+      - join_path: order_items.inventory_items.products
+        prefix: true
+        includes: "*"
+        excludes:
+          - id

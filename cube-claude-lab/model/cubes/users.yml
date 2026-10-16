@@ -1,0 +1,109 @@
+cubes:
+  - name: users
+    sql_table: ANALYTICS_PROD.ECOMM.USERS
+    public: false
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+
+      - name: city
+        sql: CITY
+        type: string
+        description: "City where the customer is located. Key geographic dimension for regional sales analysis and market planning."
+        meta:
+          synonyms: [customer city, location, market, metro area]
+
+      - name: country
+        sql: COUNTRY
+        type: string
+        description: "Country where the customer is located for international market segmentation."
+        meta:
+          synonyms: [customer country, market country, nation]
+
+      - name: state
+        sql: STATE
+        type: string
+        description: "State or province where the customer is located. Essential for regional performance, tax analysis, and territory management."
+        meta:
+          synonyms: [customer state, province, region, territory]
+
+      - name: zip
+        sql: ZIP
+        type: string
+        description: "Customer postal/zip code for micro-geographic analysis and delivery planning."
+        meta:
+          synonyms: [postal code, postcode, zip code]
+
+      - name: created_at
+        sql: CREATED_AT
+        type: time
+        description: "Timestamp when the customer account was created. Foundation for customer lifetime value and cohort analysis."
+        meta:
+          synonyms: [account created, customer since, registration date, signup date]
+
+      - name: email
+        sql: EMAIL
+        type: string
+        description: "Customer email address for identification and communication analysis."
+        meta:
+          synonyms: [contact email, customer email, email address]
+
+      - name: first_name
+        sql: FIRST_NAME
+        type: string
+        description: "Customer first name for personalization and identity."
+        meta:
+          synonyms: [customer first name, given name]
+
+      - name: last_name
+        sql: LAST_NAME
+        type: string
+        description: "Customer last name for identification."
+        meta:
+          synonyms: [customer last name, family name, surname]
+
+      - name: gender
+        sql: GENDER
+        type: string
+        description: "Customer gender for demographic segmentation and targeted marketing analysis."
+        meta:
+          synonyms: [customer gender, demographic gender, sex]
+
+      - name: age
+        sql: AGE
+        type: number
+        description: "The age of the customer in years, useful for demographic segmentation and targeted marketing analysis."
+        meta:
+          synonyms: [customer age, user age, years old]
+
+      - name: traffic_source
+        sql: TRAFFIC_SOURCE
+        type: string
+        description: "The marketing channel that acquired this customer (e.g., Organic, Facebook, Google, Email). Critical for marketing ROI and attribution analysis."
+        meta:
+          synonyms: [acquisition channel, how they found us, marketing channel, referral source, utm source]
+
+      - name: latitude
+        sql: LATITUDE
+        type: number
+        description: "Geographic latitude coordinate of the customer location for mapping and regional analysis."
+        meta:
+          synonyms: [geo latitude, lat]
+
+      - name: longitude
+        sql: LONGITUDE
+        type: number
+        description: "Geographic longitude coordinate of the customer location for mapping and regional analysis."
+        meta:
+          synonyms: [geo longitude, lng, long]
+
+    measures:
+      - name: avg_customer_age
+        sql: AGE
+        type: avg
+        description: "Average age of customers for demographic profiling and targeting."
+        meta:
+          synonyms: [average age, demographic age, mean customer age]

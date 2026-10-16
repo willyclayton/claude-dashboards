@@ -1,0 +1,238 @@
+cubes:
+  - name: order_items
+    sql_table: ANALYTICS_PROD.ECOMM.ORDER_ITEMS
+    public: false
+
+    joins:
+      - name: inventory_items
+        sql: "{CUBE}.INVENTORY_ITEM_ID = {inventory_items}.ID"
+        relationship: many_to_one
+      - name: users
+        sql: "{CUBE}.USER_ID = {users}.ID"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+
+      - name: order_id
+        sql: ORDER_ID
+        type: number
+        description: "Unique identifier for the order transaction. Multiple items can share the same order_id if purchased together."
+        meta:
+          synonyms: [order number, purchase id, transaction id]
+
+      - name: user_id
+        sql: USER_ID
+        type: number
+
+      - name: inventory_item_id
+        sql: INVENTORY_ITEM_ID
+        type: number
+
+      - name: created_at
+        sql: CREATED_AT
+        type: time
+        description: "Timestamp when the order was placed. Primary time dimension for sales trends, seasonality, and cohort analysis."
+        meta:
+          synonyms: [order date, order timestamp, purchase date, transaction date]
+
+      - name: delivered_at
+        sql: DELIVERED_AT
+        type: time
+        description: "Timestamp when the order was delivered to the customer, used for delivery time analysis."
+        meta:
+          synonyms: [arrival date, delivery date, received date]
+
+      - name: returned_at
+        sql: RETURNED_AT
+        type: time
+        description: "Timestamp when the item was returned, if applicable. Used for return timing and seasonal return pattern analysis."
+        meta:
+          synonyms: [refund date, return date]
+
+      - name: shipped_at
+        sql: SHIPPED_AT
+        type: time
+        description: "Timestamp when the order was shipped from the warehouse, used for fulfillment speed analysis."
+        meta:
+          synonyms: [dispatch date, ship date, shipment date]
+
+      - name: is_delivered
+        sql: IS_DELIVERED
+        type: boolean
+        description: "Boolean flag indicating whether the order has been successfully delivered to the customer."
+        meta:
+          synonyms: [delivered, delivery confirmed, received by customer]
+
+      - name: is_returned
+        sql: IS_RETURNED
+        type: boolean
+        description: "Boolean flag indicating whether the customer returned this item. Critical for return rate analysis and quality insights."
+        meta:
+          synonyms: [refunded, returned, sent back]
+
+      - name: is_shipped
+        sql: IS_SHIPPED
+        type: boolean
+        description: "Boolean flag indicating whether the order has been shipped from the fulfillment center."
+        meta:
+          synonyms: [dispatched, in transit, shipped]
+
+      - name: status
+        sql: STATUS
+        type: string
+        description: "Current status of the order: Processing, Shipped, Complete, Cancelled, or Returned. Essential for order funnel and fulfillment analysis."
+        meta:
+          synonyms: [fulfillment status, order state, order status, transaction status]
+
+      - name: margin
+        sql: MARGIN
+        type: number
+        description: "The profit earned on this specific item, calculated as sale price minus cost. Positive values indicate profitable sales, negative values indicate losses."
+        meta:
+          synonyms: [earnings, gross profit, item profit, markup, net profit, profit margin]
+
+      - name: months_since_signup
+        sql: MONTHS_SINCE_SIGNUP
+        type: number
+        description: "Number of months between customer account creation and this order, useful for analyzing customer lifetime value and purchase patterns by tenure."
+        meta:
+          synonyms: [account age, customer tenure, loyalty duration, membership length, months as customer]
+
+      - name: sale_price
+        sql: "{CUBE}.SALE_PRICE * 0.5"
+        type: number
+        description: "The actual price the customer paid for this item, which may differ from retail price due to discounts, promotions, or dynamic pricing."
+        meta:
+          synonyms: [amount paid, item revenue, price paid, purchase price, selling price, transaction amount]
+
+      - name: time_to_ship
+        sql: TIME_TO_SHIP
+        type: number
+        description: "Number of days between order placement and shipment, a key operational metric for fulfillment efficiency and customer satisfaction."
+        meta:
+          synonyms: [days to ship, fulfillment time, lead time, processing days, shipping time]
+
+    measures:
+      - name: total_items_sold
+        sql: ID
+        type: count
+        description: "Total number of individual items sold across all orders."
+        meta:
+          synonyms: [item count, quantity sold, units sold, volume]
+
+      - name: total_orders
+        sql: ORDER_ID
+        type: count_distinct
+        description: "Total number of unique orders/transactions. Key volume metric for business activity."
+        meta:
+          synonyms: [number of orders, order count, purchase count, transaction count]
+
+      - name: total_customers
+        sql: USER_ID
+        type: count_distinct
+        description: "Total number of unique customers who made purchases. Foundation metric for customer analytics."
+        meta:
+          synonyms: [active customers, customer count, unique buyers, unique customers]
+
+      - name: total_revenue
+        sql: "{sale_price}"
+        type: sum
+        description: "Total revenue from all sales calculated as the sum of sale prices. The primary top-line metric for business performance."
+        meta:
+          synonyms: [gmv, gross merchandise value, gross revenue, sales volume, total income, total sales]
+
+      - name: total_revenue_completed
+        sql: "{sale_price}"
+        type: sum
+        filters:
+          - sql: "{CUBE}.STATUS = 'Complete'"
+        description: "Revenue from Complete orders only."
+
+      - name: average_sale_price
+        sql: "{sale_price}"
+        type: avg
+        description: "Average selling price per item, useful for pricing strategy analysis and basket composition insights."
+        meta:
+          synonyms: [aov, average order value, average transaction, avg price, mean price]
+
+      - name: max_sales
+        sql: "{sale_price}"
+        type: max
+        description: "The highest individual sale price in the dataset, useful for identifying premium purchases and outliers."
+        meta:
+          synonyms: [highest sale, largest order, max transaction, peak sale]
+
+      - name: min_sale_price
+        sql: "{sale_price}"
+        type: min
+        description: "The lowest sale price, useful for identifying deep discounts or promotional pricing."
+        meta:
+          synonyms: [floor price, lowest sale, minimum price]
+
+      - name: total_margin
+        sql: MARGIN
+        type: sum
+        description: "Sum of individual item margins, providing an alternative profit calculation from pre-computed margin values."
+        meta:
+          synonyms: [aggregate profit, sum of margins, total item profit]
+
+      - name: avg_margin
+        sql: MARGIN
+        type: avg
+        description: "Average profit margin per item sold, useful for product-level profitability analysis."
+        meta:
+          synonyms: [average profit per item, mean margin]
+
+      - name: avg_time_to_ship
+        sql: TIME_TO_SHIP
+        type: avg
+        description: "Average number of days to ship orders, a critical operational KPI for customer satisfaction."
+        meta:
+          synonyms: [average shipping time, avg processing days, mean fulfillment time]
+
+      - name: max_time_to_ship
+        sql: TIME_TO_SHIP
+        type: max
+        description: "Maximum shipping time observed, useful for identifying fulfillment bottlenecks."
+        meta:
+          synonyms: [longest ship time, max fulfillment delay]
+
+      - name: return_count
+        type: count
+        filters:
+          - sql: "{CUBE}.IS_RETURNED"
+        description: "Total number of items returned by customers."
+        meta:
+          synonyms: [refund count, returned items, returns]
+
+      - name: return_rate
+        sql: "{return_count} * 100.0 / NULLIF({total_items_sold}, 0)"
+        type: number
+        description: "Percentage of items returned (0-100), a key quality and customer satisfaction metric. Industry average is typically 15-30%."
+        meta:
+          synonyms: [refund rate, return percentage, return ratio]
+
+      - name: items_per_order
+        sql: "{total_items_sold} * 1.0 / NULLIF({total_orders}, 0)"
+        type: number
+        description: "Average number of items per order, a key metric for basket analysis and cross-sell effectiveness."
+        meta:
+          synonyms: [basket size, items per basket, order size, units per transaction]
+
+      - name: orders_per_customer
+        sql: "{total_orders} * 1.0 / NULLIF({total_customers}, 0)"
+        type: number
+        description: "Average number of orders per customer, indicating purchase frequency and loyalty."
+        meta:
+          synonyms: [order frequency, purchase frequency, transactions per customer]
+
+      - name: revenue_per_customer
+        sql: "{total_revenue} / NULLIF({total_customers}, 0)"
+        type: number
+        description: "Average revenue per unique customer, a proxy for customer value and spending patterns."
+        meta:
+          synonyms: [arpu, average revenue per user, customer value, spend per customer]

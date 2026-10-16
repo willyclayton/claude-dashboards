@@ -1,0 +1,85 @@
+cubes:
+  - name: products
+    sql_table: ANALYTICS_PROD.ECOMM.PRODUCTS
+    public: false
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+
+      - name: brand
+        sql: BRAND
+        type: string
+        description: "Brand name from the product master data. Use for brand-level analytics and competitive analysis."
+        meta:
+          synonyms: [label, make, manufacturer, product brand]
+
+      - name: category
+        sql: CATEGORY
+        type: string
+        description: "Product category from master data for hierarchical category reporting."
+        meta:
+          synonyms: [item type, merchandise type, product category]
+
+      - name: department
+        sql: DEPARTMENT
+        type: string
+        description: "Department classification from product master for high-level business reporting."
+        meta:
+          synonyms: [business segment, division, product department]
+
+      - name: name
+        sql: NAME
+        type: string
+        description: "Product name from master data catalog."
+        meta:
+          synonyms: [item name, product name, title]
+
+      - name: sku
+        sql: SKU
+        type: string
+        description: "SKU from product master for product-level detail analysis."
+        meta:
+          synonyms: [item code, product code, product sku]
+
+      - name: cost
+        sql: COST
+        type: number
+        description: "The standard cost for this product SKU, used as the baseline for margin calculations and inventory valuation."
+        meta:
+          synonyms: [base cost, product cost, wholesale price]
+
+      - name: distribution_center_id
+        sql: DISTRIBUTION_CENTER_ID
+        type: number
+
+      - name: retail_price
+        sql: RETAIL_PRICE
+        type: number
+        description: "The standard retail price for this product before any discounts or promotions are applied."
+        meta:
+          synonyms: [full price, list price, msrp, recommended price]
+
+    measures:
+      - name: total_cost
+        sql: COST
+        type: sum
+        description: "Total product costs from the product master, useful for cost variance analysis."
+        meta:
+          synonyms: [merchandise cost, product costs]
+
+      - name: unique_brands_sold
+        sql: BRAND
+        type: count_distinct
+        description: "Number of unique brands represented in sales, useful for brand portfolio analysis."
+        meta:
+          synonyms: [brand count, brand variety]
+
+      - name: unique_products_sold
+        sql: ID
+        type: count_distinct
+        description: "Number of unique products/SKUs sold, indicating catalog breadth and product diversity."
+        meta:
+          synonyms: [product count, product variety, sku count]

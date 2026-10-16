@@ -1,0 +1,2 @@
+PyJWT>=2.8
+snowflake-connector-python>=3.12
