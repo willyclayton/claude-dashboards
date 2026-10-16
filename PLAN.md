@@ -1,5 +1,40 @@
 # Claude Dashboards + Cube vs Omni: Project Plan
 
+## Why the fuck do I care?
+
+**The question:** can Claude plus a free semantic layer (Cube) do what Omni's semantic layer does? If yes, "what does Omni add?" gets a much harder question. If no, we'll know exactly where Omni earns its keep.
+
+*Plain English: a semantic layer is the one place where "revenue" or "return rate" is defined once, so every chart and every AI answer uses the same math.*
+
+**Pulse check (as of this update): promising, but not proven.** One piece is built and looks right. The pieces that decide the verdict haven't been run yet.
+
+### Am I getting close to Omni?
+
+| Area | Where it stands | Verdict |
+|---|---|---|
+| Defining metrics once | Omni's sales topic was ported to Cube: 24 measures, 46 fields, descriptions and synonyms, including odd definitions like the halved `sale_price`. It compiles and generates correct-looking SQL. This took about one session, mostly mechanical. | **Close** |
+| Deterministic SQL | Cube writes the SQL from the definitions, so the same question gives the same query. Checked on the SQL only, not yet on real data. | **Close, unproven** |
+| Numbers match the warehouse and Omni | Six golden tests are written. They can't run until Cube can log in to Snowflake. | **Unproven** |
+| Claude picks the right metric | Descriptions and synonyms carry over, but only through my small wrapper. It hasn't been tested with real questions. | **Unproven** |
+| Changing a definition | Cube: edit a YAML file, test, merge. Omni: edit in its modeling tool with branches. Nobody has timed either. | **Unproven** |
+| Dashboards | Unknown whether Claude Dashboards' charts actually go through the Cube tool or write their own SQL. This is the most important test. | **Unknown** |
+| Who is asking (permissions) | Cube can filter rows by user. A real rollout needs per-person sign-in. Cube Cloud's hosted option offers it. My local setup uses one shared login. | **Gap** |
+| Ease for non-engineers | Omni has a visual modeling tool. Cube is YAML in Git, which is fine for engineers and harder for analysts. | **Gap** |
+| Running it | Omni is managed. With Cube Core, we own hosting, auth, upgrades and monitoring. | **Gap, cost to quantify** |
+| Cost | Cube Core is free, but the people-time isn't. Cube Cloud pricing and limits are unverified. | **Unknown** |
+
+### Why it could get there
+- Porting a real Omni model into Cube was fast, so the modeling layer isn't the hard part.
+- Cube generates the SQL itself, which is exactly the "almost deterministic SQL" idea.
+- Cube Cloud ships a hosted MCP server with OAuth, which covers some of the identity gap.
+
+### Why it might not
+- Everything that decides the verdict (accuracy on real questions, dashboards, upkeep) hasn't been run.
+- Omni bundles modeling UI, permissions, hosting and AI context. Replicating that is a lot of surrounding work.
+- The Snowflake key is still blocked on an admin, so nothing has run on live data.
+
+**Bottom line for the team:** don't cite this as "Cube is as good as Omni." What's true: the semantic layer itself ports easily. What's open: whether Claude uses it correctly and what it costs to run and maintain.
+
 ## Goal
 Test, honestly and as a devil's advocate to Omni, whether Claude Dashboards plus a free, open-source semantic layer (Cube) is a viable alternative to Omni's semantic layer. Report findings to the central data team on: **answer accuracy, setup effort, upkeep (how definitions change), and cost.**
 
