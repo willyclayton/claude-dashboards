@@ -1,0 +1,29 @@
+ID,Plan,Workstream,Task,Status,Owner,Date,Evidence / notes,Est hours,Next action
+1,1,Data,Align Omni and Snowflake on same data,Done,Will,2026-10-16,Both read ANALYTICS_PROD.ECOMM,1,
+2,1,Model,Port Omni sales topic to Cube YAML,Done,Claude,2026-10-16,5 files; compiles,1,
+3,1,Infra,Connect Cube to Snowflake via PAT,Done,Will + Claude,2026-10-16,259301 items / 252701 orders returned,1,Rotate PAT after lab; ask admin for read-only role
+4,1,Testing,Golden accuracy tests (Cube vs SQL),Done,Claude,2026-10-16,6 of 6 pass,0.5,Re-run after any model change
+5,1,Infra,Connect Claude Desktop to Cube via MCP,Done,Will + Claude,2026-10-16,cube server running in Desktop; revenue-by-month query returned,1,
+6,1,Infra,Fix macOS Desktop-folder permission + mcp 2.x pin,Done,Claude,2026-10-16,Server moved to ~/.cube-mcp; mcp>=1.9<2,0.5,
+7,1,Dashboards,Build first Claude Dashboard (Ecommerce Sales: Last 6 Months),In progress,Will + Claude,2026-10-16,Shell created; queries running when last seen,1,Check finished tiles; confirm category/country fields exist
+8,1,Dashboards,Confirm dashboard tiles go through Cube (not own SQL),Not started,Will,,Most important open test,0.5,Inspect finished dashboard's query/SQL
+9,1,Data quality,Confirm SALE_PRICE * 0.5 is intentional,Not started,Will,,Ported from Omni topic; unclear intent,0.25,Ask data team
+10,1,Model,Move exclude cancelled/returned rule from ai_context into a measure,Not started,Claude,,Today it's advisory prose only,0.5,Decide after item 9
+11,1,Testing,Re-check Desktop numbers against golden tests,Not started,Claude,,Revenue Apr-Sep 2026 returned in Desktop,0.25,Run tests/run_golden.py
+12,1,Testing,Write 10-15 question set with expected answers,Not started,Will,,Clean / ambiguous / out of scope,1.5,Draft questions
+13,1,Testing,Run questions: Claude alone vs Claude+Cube vs Claude+Omni,Not started,Will + Claude,,,2.5,After item 12
+14,1,Testing,Definition-change timing test (Cube vs Omni),Not started,Will + Claude,,,1.5,
+15,1,Writeup,Findings write-up for data team,Not started,Will + Claude,,Accuracy / hours / cost / upkeep,2.5,
+16,1,Security,Delete old will-cube-testing token; rotate PAT,Not started,Will,,Tokens were pasted into chat,0.25,
+17,1,Security,Keep Desktop config private (API secret in plaintext),Open,Will,2026-10-16,claude_desktop_config.json,,Don't share the file
+18,2,Setup,Ask William for branch-validate-main workflow,Not started,Will,,,0.5,
+19,2,Setup,Pick target topic and baseline,Not started,Will + Claude,,,1,
+20,2,Setup,Seed repo with Omni model YAML,Not started,Claude,,,1,
+21,2,Setup,Write validate script (branch / push / validate),Not started,Claude,,,1.5,
+22,2,Testing,Baseline: 15 questions through Omni AI and Claude alone,Not started,Will + Claude,,,2,
+23,2,Enrichment,Enrichment round 1 as PR; validate and merge on branch,Not started,Claude,,,2,
+24,2,Testing,Re-run 15 questions and compare,Not started,Will + Claude,,,1,
+25,2,Automation,GitHub Action for validation,Not started,Claude,,Needs Omni API key secret,1.5,
+26,2,Writeup,Plan 2 findings,Not started,Will + Claude,,,2.5,
+27,Docs,Docs,Docker and Cube 101,Done,Claude,2026-10-16,docs/Docker and Cube 101.md,0.25,
+28,Docs,Docs,Learnings doc,Done,Claude,2026-10-16,docs/Learnings.md,0.25,Keep updating

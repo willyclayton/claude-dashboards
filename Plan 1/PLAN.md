@@ -1,6 +1,6 @@
 # Plan 1: Can Claude + Cube replace Omni's semantic layer?
 
-*Last updated 2026-10-16. Owner: Will Clayton.*
+*Last updated 2026-10-16 (Desktop MCP connected, first Claude Dashboard in progress). Owner: Will Clayton.*
 
 ## 1. The one-minute version
 
@@ -8,14 +8,15 @@
 
 **Why it matters.** A semantic layer is the one place where "revenue" or "return rate" is defined once, so every chart and every AI answer uses the same math. Omni sells this as a core feature. If a free tool can do the same job, we need a sharper answer to "what does Omni add?". If it can't, we learn exactly where Omni earns its keep.
 
-**Status: Green on build, Yellow on verdict.** The Cube model is built, live on real Snowflake data, and passes all 6 accuracy tests. The tests that decide the verdict (does Claude pick the right metric, do dashboards use it, what does upkeep cost) have not been run.
+**Status: Green on build, Yellow on verdict.** The Cube model is built, live on real Snowflake data, passes all 6 accuracy tests, and Claude Desktop now queries it through MCP. A first Claude Dashboard is being built. The tests that decide the verdict (does Claude pick the right metric consistently, do dashboard tiles go through Cube, what does upkeep cost) are not finished.
 
 | | |
 |---|---|
 | Cube model built from Omni's sales topic | Done (24 measures, 46 fields) |
 | Connected to live Snowflake data | Done (2026-10-16) |
 | Accuracy tests, Cube vs hand-written SQL | **6 of 6 pass** |
-| Claude asking questions through Cube | Not started |
+| Claude asking questions through Cube | Working in Claude Desktop (2026-10-16); scored question set not started |
+| First Claude Dashboard on Cube | In progress |
 | Same questions through Omni, scored side by side | Not started |
 | Cost and upkeep comparison | Not started |
 
@@ -43,7 +44,8 @@
 | 2 | Port Omni's `analytics_prod_ecomm__sales` topic to Cube YAML | Done | 5 files, about 570 lines, compiles |
 | 3 | Connect Cube to Snowflake | **Done 2026-10-16** | Query returned 259,301 items and 252,701 orders |
 | 4 | Golden accuracy tests | **Done, 6/6 pass** | See section 4 |
-| 5 | Connect Claude (local MCP wrapper or Cube Cloud MCP) | Next | `mcp/server.py` written, not yet run |
+| 5 | Connect Claude (local MCP wrapper or Cube Cloud MCP) | **Done 2026-10-16** | Local stdio MCP in Claude Desktop; revenue-by-month query returned. See `docs/Learnings.md` |
+| 5b | Build first Claude Dashboard on the cube tools | **In progress** | "Ecommerce Sales: Last 6 Months"; queries were running when last seen |
 | 6 | Run 10-15 questions three ways: Claude alone, Claude + Cube, Claude + Omni | Not started | Question set not written |
 | 7 | Definition-change test: change one metric in Cube and in Omni, time both | Not started | |
 | 8 | Findings write-up for the data team | Not started | |
@@ -78,7 +80,7 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 | Numbers match the warehouse | 6 of 6 golden tests pass on live data | **Proven** |
 | Claude picks the right metric | Descriptions and synonyms carried over; untested with real questions | Unproven |
 | Changing a definition | Cube: edit YAML, test, merge. Omni: modeling tool with branches. Not timed | Unproven |
-| Dashboards | Do Claude Dashboards' charts go through the Cube tool or write their own SQL? Most important open test | Unknown |
+| Dashboards | Claude Dashboards is chat-built and can call the cube MCP tools; first build ran its queries as cube "Query data" calls. Whether the finished tiles stay on Cube is unchecked | Promising, unverified |
 | Who is asking (permissions) | Cube can filter rows by user, but needs per-person sign-in. Local setup uses one shared login | Gap |
 | Ease for non-engineers | Omni has a visual modeler. Cube is YAML in Git | Gap |
 | Running it | Omni is managed. Cube Core means we own hosting, auth, upgrades, monitoring | Gap, cost to quantify |
@@ -90,6 +92,10 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 2. **Definition conflicts with instruction.** `total_revenue` includes all statuses, but the topic's AI instructions say to exclude cancelled and returned orders.
 3. **Omni's simple `ecommerce_sales` topic is bare** (no descriptions or revenue measures). The prod topics built from Snowflake semantic views carry the real definitions.
 4. **Faster path to access.** A PAT replaces the admin-gated key-pair for a lab; role scoping on the token is the thing to get right.
+5. **The "exclude cancelled and returned" rule worked, but only as advice.** Claude applied it from the view's `ai_context`; the `total_revenue` measure itself includes all statuses. A different client that ignores `ai_context` would get different numbers.
+6. **Desktop setup traps.** macOS blocks Desktop-launched processes from reading `~/Desktop` (server and venv now live in `~/.cube-mcp`), and `mcp` 2.x breaks `FastMCP` (pinned `<2`). Desktop only reads MCP config on a full quit and relaunch.
+7. **No tunnel needed for Desktop.** Stdio MCP runs locally, so the Cloudflare tunnel is only needed for claude.ai in a browser.
+8. **Claude Dashboards is chat-only.** Prompts must say "Claude Dashboard"; it is not an artifact.
 
 ## 7. Tools and what each one does
 
@@ -102,12 +108,12 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 | Python 3.12 | Test runner and MCP wrapper | Free | Yes |
 | Claude Code | Built the model, config and tests | Existing | Yes |
 | Git / GitHub (private) | Code and notes | Free | Yes |
-| Claude + Claude Dashboards | The AI and dashboard front end being tested | Existing; plan details unverified | Next |
-| MCP wrapper (`mcp/server.py`) | Bridge letting Claude call Cube | Free (our code) | Next |
+| Claude Desktop + Claude Dashboards | The AI and dashboard front end being tested | Existing; plan details unverified | Yes |
+| MCP wrapper (`mcp/server.py`) | Bridge letting Claude call Cube (runs from `~/.cube-mcp` for Desktop) | Free (our code) | Yes |
 | Cloudflare quick tunnel | Public URL so claude.ai can reach the local MCP | Free (lab data only) | Planned |
 | Cube Cloud | Hosted Cube with hosted MCP and OAuth | Free tier or paid; limits unverified | Evaluating |
 
-11 tools in total: 7 in use, 2 next, 1 planned, 1 under evaluation. Only Snowflake and Omni cost money, and both already existed.
+11 tools in total: 9 in use, 1 planned, 1 under evaluation. Only Snowflake and Omni cost money, and both already existed.
 
 ## 8. Risks and decisions needed
 
@@ -115,17 +121,20 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 |---|---|---|
 | `DBT_DEMO_ROLE` is broader than needed | Write access for a read-only tool | Ask an admin for a read-only role on `ECOMM` |
 | Tokens were pasted into chat | Treat them as exposed; they live in gitignored `.env` | Delete old `will-cube-testing` token; rotate after the lab |
+| Desktop config holds the API secret in plaintext | Anyone with the file can mint Cube tokens | Keep `claude_desktop_config.json` private; rotate secret after the lab |
 | Dashboards may bypass Cube | If charts write their own SQL, the semantic layer isn't doing its job there | Test in step 6 |
 | Cube Cloud limits unknown | Decides whether hosted OAuth is viable | Click Create Deployment to see plan limits |
 | Question set not written | Accuracy scoring can't start without it | Draft 10-15 questions: clean, ambiguous, out of scope |
 
 ## 9. Next steps (in order)
 
-1. Write the 10-15 question set with expected answers.
-2. Start the MCP wrapper and ask Claude the questions through Cube.
-3. Run the same questions through Omni and score all three arms.
-4. Time a definition change in both tools.
-5. Write up accuracy, hours, cost and upkeep for the data team.
+1. Finish the first Claude Dashboard; confirm every tile's data came through Cube (and that category and country fields exist).
+2. Re-check the Desktop revenue numbers against the golden tests.
+3. Write the 10-15 question set with expected answers.
+4. Ask Claude the questions through Cube.
+5. Run the same questions through Omni and score all three arms.
+6. Time a definition change in both tools.
+7. Write up accuracy, hours, cost and upkeep for the data team.
 
 ## 10. Hours
 
@@ -136,7 +145,8 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 | Docker, Python, Cube Cloud setup | about 1 h | none |
 | Snowflake access | about 1 h (token workaround, role discovery) | none |
 | Golden tests | about 0.5 h | none |
-| Connect Claude | none | 1-2 h |
+| Connect Claude (Desktop MCP, incl. fixes) | about 1.5 h | none |
+| First Claude Dashboard | about 0.5 h so far | 1 h |
 | Question set and scoring | none | 3-4 h |
 | Definition-change test (both tools) | none | 1-2 h |
 | Findings write-up | none | 2-3 h |
@@ -151,6 +161,7 @@ Estimates; replace with measured numbers. The data team will ask what build and 
 4. Run the golden tests (command in section 4)
 
 ## 12. Files
+- `../docs/`: `Learnings.md` (running log), `Project Tracker.csv` (master tracker), `Docker and Cube 101.md`
 - `cube-claude-lab/`: Cube model (`model/`), MCP wrapper (`mcp/`), tests (`tests/`), `docker-compose.yml`
 - `omni-source/`: the Omni topic the Cube model was converted from
 - `Cube Core + Claude_ hands-on lab.md`: original lab guide
