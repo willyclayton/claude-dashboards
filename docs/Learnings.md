@@ -25,8 +25,10 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 
 - **Chat-driven only.** There's no editor. Include the phrase "Claude Dashboard" (or similar) in the prompt for it to build one. It is not an artifact, so artifact-style prompts are the wrong approach.
 - **It can use the local `cube` MCP tools.** The first build, "Ecommerce Sales: Last 6 Months", created a dashboard shell, read its own design and data-loader references, then ran the KPI and chart queries as "Query data" calls against the cube connector.
-- **Open question (Plan 1 step 6):** whether the finished dashboard's tiles keep going through Cube, or write their own SQL. The in-progress run suggests Cube, but the finished dashboard has not been checked.
-- **Not yet confirmed:** that the view has product category and country fields (the prompt asked for both).
+- **Confirmed: tiles go through Cube.** The finished dashboard's side panel shows `cube · query_data` with the `sales.*` measures, the status filter and the date range. The category and country fields exist (`sales.products_category` is used).
+- **To see the SQL:** each tile has an expandable "SQL" link (the five KPI tiles share one "SQL behind the five figures"). The side panel shows the Cube JSON query, not SQL.
+- **It surfaces model problems.** It flagged that average sale price uses the halved price ($23.19) while average margin uses the unhalved `MARGIN` column ($24.18), so margin exceeds price. It also showed only USA and UK after exclusions.
+- Screenshot: `pics_along_the_way/2026-10-16-claude-dashboard-first-build.png`.
 
 ## Workflow and tooling
 
@@ -43,6 +45,8 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 ## Open questions
 
 1. Is `SALE_PRICE * 0.5` intentional? (Ask the data team.)
-2. Do Claude Dashboards tiles go through Cube or write their own SQL?
+2. ~~Do Claude Dashboards tiles go through Cube?~~ Yes (answered 2026-10-16).
 3. Should the "exclude cancelled/returned" rule move from `ai_context` into a measure or segment so it's enforced, not advisory?
 4. Do the Desktop numbers match the golden tests?
+5. What is the correct basis for `avg_margin` (halved or unhalved)?
+6. Why only USA and UK after exclusions: expected for this dataset?

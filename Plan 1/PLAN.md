@@ -16,7 +16,7 @@
 | Connected to live Snowflake data | Done (2026-10-16) |
 | Accuracy tests, Cube vs hand-written SQL | **6 of 6 pass** |
 | Claude asking questions through Cube | Working in Claude Desktop (2026-10-16); scored question set not started |
-| First Claude Dashboard on Cube | In progress |
+| First Claude Dashboard on Cube | Done; tiles confirmed to use Cube |
 | Same questions through Omni, scored side by side | Not started |
 | Cost and upkeep comparison | Not started |
 
@@ -45,7 +45,7 @@
 | 3 | Connect Cube to Snowflake | **Done 2026-10-16** | Query returned 259,301 items and 252,701 orders |
 | 4 | Golden accuracy tests | **Done, 6/6 pass** | See section 4 |
 | 5 | Connect Claude (local MCP wrapper or Cube Cloud MCP) | **Done 2026-10-16** | Local stdio MCP in Claude Desktop; revenue-by-month query returned. See `docs/Learnings.md` |
-| 5b | Build first Claude Dashboard on the cube tools | **In progress** | "Ecommerce Sales: Last 6 Months"; queries were running when last seen |
+| 5b | Build first Claude Dashboard on the cube tools | **Done 2026-10-16** | "Ecommerce sales: last 6 months"; tiles use cube `query_data`; SQL shown per tile |
 | 6 | Run 10-15 questions three ways: Claude alone, Claude + Cube, Claude + Omni | Not started | Question set not written |
 | 7 | Definition-change test: change one metric in Cube and in Omni, time both | Not started | |
 | 8 | Findings write-up for the data team | Not started | |
@@ -80,7 +80,7 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 | Numbers match the warehouse | 6 of 6 golden tests pass on live data | **Proven** |
 | Claude picks the right metric | Descriptions and synonyms carried over; untested with real questions | Unproven |
 | Changing a definition | Cube: edit YAML, test, merge. Omni: modeling tool with branches. Not timed | Unproven |
-| Dashboards | Claude Dashboards is chat-built and can call the cube MCP tools; first build ran its queries as cube "Query data" calls. Whether the finished tiles stay on Cube is unchecked | Promising, unverified |
+| Dashboards | Claude Dashboards is chat-built and can call the cube MCP tools; first build ran its queries as cube "Query data" calls. Whether the finished tiles stay on Cube is unchecked | **Confirmed** for the first build |
 | Who is asking (permissions) | Cube can filter rows by user, but needs per-person sign-in. Local setup uses one shared login | Gap |
 | Ease for non-engineers | Omni has a visual modeler. Cube is YAML in Git | Gap |
 | Running it | Omni is managed. Cube Core means we own hosting, auth, upgrades, monitoring | Gap, cost to quantify |
@@ -128,13 +128,27 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 
 ## 9. Next steps (in order)
 
-1. Finish the first Claude Dashboard; confirm every tile's data came through Cube (and that category and country fields exist).
+1. Fix the `avg_margin` basis bug the dashboard exposed (price is halved, margin is not).
 2. Re-check the Desktop revenue numbers against the golden tests.
 3. Write the 10-15 question set with expected answers.
 4. Ask Claude the questions through Cube.
 5. Run the same questions through Omni and score all three arms.
 6. Time a definition change in both tools.
 7. Write up accuracy, hours, cost and upkeep for the data team.
+
+### Scenarios to test (Cube vs Omni, head to head)
+
+Goal: find where Cube + Claude could stand in for Omni, and where it can't without someone technical. Each scenario is run in both tools and scored.
+
+| # | Scenario | What we compare | Source |
+|---|---|---|---|
+| 1 | **How easy it is to change a metric** | Time and steps to change one definition (for example, put the cancelled/returned exclusion into `total_revenue`) in Cube YAML vs Omni's modeler. Who can do it: analyst or engineer? | Will |
+| 2 | **SQL output and number verification** | Is the generated SQL readable and correct? Can a person check it against the warehouse (golden tests, "SQL behind the figures" in the dashboard) without help? | Will |
+| 3 | **How scalable it is** | More metrics, more tables, more users, bigger data. Hosting, auth, per-user permissions, upgrades, and the cost of owning Cube Core vs a managed Omni | Will |
+| 4 | **Who can set it up and maintain it** | Hypothesis: Cube needs a data engineer to set up, modify relationships and read the SQL; Omni doesn't. Measure it by what a non-engineer can do unaided in each tool | Will |
+| 5 | **Consistency across clients** | Does the same question give the same number in Claude chat, Claude Dashboards, and Omni, given that rules like "exclude cancelled" currently live in `ai_context` text rather than the measure? | Suggested, from the dashboard run |
+
+Any further question of this kind (cost, governance, permissions) goes on this list. If Omni wins on 1, 3 and 4 without needing an engineer, that is the answer to "what does Omni add?".
 
 ## 10. Hours
 

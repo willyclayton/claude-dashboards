@@ -5,8 +5,8 @@ ID,Plan,Workstream,Task,Status,Owner,Date,Evidence / notes,Est hours,Next action
 4,1,Testing,Golden accuracy tests (Cube vs SQL),Done,Claude,2026-10-16,6 of 6 pass,0.5,Re-run after any model change
 5,1,Infra,Connect Claude Desktop to Cube via MCP,Done,Will + Claude,2026-10-16,cube server running in Desktop; revenue-by-month query returned,1,
 6,1,Infra,Fix macOS Desktop-folder permission + mcp 2.x pin,Done,Claude,2026-10-16,Server moved to ~/.cube-mcp; mcp>=1.9<2,0.5,
-7,1,Dashboards,Build first Claude Dashboard (Ecommerce Sales: Last 6 Months),In progress,Will + Claude,2026-10-16,Shell created; queries running when last seen,1,Check finished tiles; confirm category/country fields exist
-8,1,Dashboards,Confirm dashboard tiles go through Cube (not own SQL),Not started,Will,,Most important open test,0.5,Inspect finished dashboard's query/SQL
+7,1,Dashboards,Build first Claude Dashboard (Ecommerce Sales: Last 6 Months),Done,Will + Claude,2026-10-16,"Dashboard built (KPIs, 5 charts, SQL per tile); screenshot in pics_along_the_way",1,Check finished tiles; confirm category/country fields exist
+8,1,Dashboards,Confirm dashboard tiles go through Cube (not own SQL),Done,Will,2026-10-16,Side panel shows cube query_data with sales.* measures; category and country fields exist,0.5,
 9,1,Data quality,Confirm SALE_PRICE * 0.5 is intentional,Not started,Will,,Ported from Omni topic; unclear intent,0.25,Ask data team
 10,1,Model,Move exclude cancelled/returned rule from ai_context into a measure,Not started,Claude,,Today it's advisory prose only,0.5,Decide after item 9
 11,1,Testing,Re-check Desktop numbers against golden tests,Not started,Claude,,Revenue Apr-Sep 2026 returned in Desktop,0.25,Run tests/run_golden.py
@@ -27,3 +27,10 @@ ID,Plan,Workstream,Task,Status,Owner,Date,Evidence / notes,Est hours,Next action
 26,2,Writeup,Plan 2 findings,Not started,Will + Claude,,,2.5,
 27,Docs,Docs,Docker and Cube 101,Done,Claude,2026-10-16,docs/Docker and Cube 101.md,0.25,
 28,Docs,Docs,Learnings doc,Done,Claude,2026-10-16,docs/Learnings.md,0.25,Keep updating
+29,1,Scenarios,Scenario 1: ease of changing a metric (Cube vs Omni),Not started,Will + Claude,,"See Plan 1 ""Scenarios to test""",1.5,
+30,1,Scenarios,Scenario 2: SQL output and number verification,Not started,Will + Claude,,Dashboard shows SQL per tile,1,
+31,1,Scenarios,Scenario 3: scalability and cost of owning Cube,Not started,Will + Claude,,,1.5,
+32,1,Scenarios,Scenario 4: who can set up and maintain (engineer needed?),Not started,Will,,,1,
+33,1,Scenarios,Scenario 5: consistency across Claude chat / Dashboards / Omni,Not started,Will + Claude,,,1,
+34,1,Model,Fix avg_margin basis: price is halved (x0.5) but MARGIN column is not,Not started,Claude,2026-10-16,avg sale price $23.19 vs avg margin $24.18 (margin > price); flagged by Claude Dashboards,0.5,Check Omni topic for same issue; decide correct basis
+35,1,Data quality,Countries table shows only USA and UK after exclusions,Not started,Will,2026-10-16,Check if expected for this dataset,0.25,Query distinct countries in Snowflake
