@@ -10,10 +10,9 @@ services:
       CUBEJS_DB_SNOWFLAKE_ROLE: ${CUBEJS_DB_SNOWFLAKE_ROLE:?set in .env}
       CUBEJS_DB_NAME: ${CUBEJS_DB_NAME:-ANALYTICS_PROD}
       CUBEJS_DB_USER: ${CUBEJS_DB_USER:?set in .env}
-      CUBEJS_DB_SNOWFLAKE_PRIVATE_KEY_PATH: /cube/secrets/snowflake_key.p8
+      CUBEJS_DB_PASS: ${CUBEJS_DB_PASS:?set Snowflake PAT in .env}
       CUBEJS_API_SECRET: ${CUBEJS_API_SECRET:?set CUBEJS_API_SECRET in .env}
       CUBEJS_DEV_MODE: ${CUBEJS_DEV_MODE:-true}
     volumes:
       - ./model:/cube/conf/model
       - ./cube.js:/cube/conf/cube.js:ro
-      - ./secrets/snowflake_key.p8:/cube/secrets/snowflake_key.p8:ro

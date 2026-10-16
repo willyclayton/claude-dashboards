@@ -39,9 +39,7 @@ def sf(sql):
         _conn = snowflake.connector.connect(
             account=os.environ["CUBEJS_DB_SNOWFLAKE_ACCOUNT"],
             user=os.environ["CUBEJS_DB_USER"],
-            private_key_file=os.path.join(
-                os.path.dirname(__file__), "..", "secrets", "snowflake_key.p8"
-            ),
+            password=os.environ["CUBEJS_DB_PASS"],
             warehouse=os.environ["CUBEJS_DB_SNOWFLAKE_WAREHOUSE"],
             role=os.environ["CUBEJS_DB_SNOWFLAKE_ROLE"],
         )
