@@ -26,6 +26,7 @@
 | Read what we learned and the gotchas | [docs/Learnings.md](docs/Learnings.md) |
 | Understand the plan, evidence and scorecard | [Plan 1/PLAN.md](Plan%201/PLAN.md) |
 | See the Cube vs Omni scenarios | [Plan 1/PLAN.md](Plan%201/PLAN.md), section "Scenarios to test" |
+| Compare every Omni attribute with Cube (yes/no/sorta) | [docs/Omni vs Cube attributes.md](docs/Omni%20vs%20Cube%20attributes.md) |
 | Learn Docker and Cube basics | [docs/Docker and Cube 101.md](docs/Docker%20and%20Cube%20101.md) |
 | See the Plan 2 idea | [Plan 2/PLAN.md](Plan%202/PLAN.md) |
 | See screenshots of progress | [pics_along_the_way/](pics_along_the_way/) |
