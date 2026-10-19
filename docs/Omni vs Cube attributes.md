@@ -19,7 +19,7 @@ Every attribute Omni's docs list for models, topics, views, relationships, dimen
 | `ai_context` | **Sorta** | `meta.ai_context` is a documented key "for AI agents" in Cube docs, but Core's API doesn't act on it. Our MCP wrapper reads it |
 | `ai_fields` | **Sorta** | `public`, view `includes`/`excludes` limit what anyone can query, not AI-specific |
 | `always_having_filters / always_having_sql` | **Sorta** | `queryRewrite` can inject measure filters; no dedicated parameter |
-| `always_where_filters / always_where_sql` | **Yes** | View `default_filters` (with optional `unless`), or `queryRewrite` |
+| `always_where_filters / always_where_sql` | **Yes** | View `default_filters` (with optional `unless`), or `queryRewrite`. **Tested 2026-10-19** on our container: adding `status notEquals [Cancelled, Returned]` removed those rows even when grouping by status, and reverting restored them |
 | `auto_run` | **Sorta** | `meta.auto_run: false` on a view, Cube Cloud workbooks only |
 | `base_view / joins / relationships` | **Yes** | Cube `joins` plus the view's `cubes` join paths |
 | `base_view_label` | **Sorta** | View `title` |
