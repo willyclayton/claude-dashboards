@@ -1,0 +1,246 @@
+{
+ "r1": {
+  "runs": 30,
+  "errors": 0,
+  "accuracy_pct": 60.0,
+  "consistency_pct": 100.0,
+  "avg_cost_usd": 0.1233,
+  "avg_seconds": 14.9,
+  "avg_turns": 4.1,
+  "per_question": {
+   "Q1": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q2": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q3": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q4": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q5": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q6": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q7": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q8": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q9": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q10": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   }
+  }
+ },
+ "r2": {
+  "runs": 30,
+  "errors": 0,
+  "accuracy_pct": 100.0,
+  "consistency_pct": 100.0,
+  "avg_cost_usd": 0.0484,
+  "avg_seconds": 9.0,
+  "avg_turns": 4.0,
+  "per_question": {
+   "Q1": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q2": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q3": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q4": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q5": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q6": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q7": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q8": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q9": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q10": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   }
+  }
+ },
+ "r3": {
+  "runs": 30,
+  "errors": 0,
+  "accuracy_pct": 36.7,
+  "consistency_pct": 90.0,
+  "avg_cost_usd": 0.1579,
+  "avg_seconds": 34.2,
+  "avg_turns": 7.7,
+  "per_question": {
+   "Q1": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q2": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q3": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q4": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q5": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q6": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q7": {
+    "correct": 2,
+    "n": 3,
+    "all_runs_agree": false
+   },
+   "Q8": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q9": {
+    "correct": 0,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q10": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   }
+  }
+ },
+ "r3b": {
+  "runs": 30,
+  "errors": 0,
+  "accuracy_pct": 93.3,
+  "consistency_pct": 90.0,
+  "avg_cost_usd": 0.1593,
+  "avg_seconds": 37.0,
+  "avg_turns": 7.7,
+  "per_question": {
+   "Q1": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q2": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q3": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q4": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q5": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q6": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q7": {
+    "correct": 1,
+    "n": 3,
+    "all_runs_agree": false
+   },
+   "Q8": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q9": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   },
+   "Q10": {
+    "correct": 3,
+    "n": 3,
+    "all_runs_agree": true
+   }
+  }
+ }
+}

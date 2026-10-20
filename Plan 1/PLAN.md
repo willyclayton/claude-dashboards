@@ -22,6 +22,8 @@
 
 **Bottom line today.** Don't cite this as "Cube is as good as Omni." What is proven: the semantic layer ports easily and its numbers match the warehouse exactly. What is open: whether Claude uses it correctly, and what it costs to run and maintain.
 
+**Test results and evidence (2026-10-20):** see [Findings.md](Findings.md): 4-route bake-off, security and metric-change tests. **Success criteria and scoring:** see [Success Criteria.md](Success%20Criteria.md) (eight criteria, three routes, five seats, and the three tests that decide it).
+
 ## 2. How it works
 
 ```

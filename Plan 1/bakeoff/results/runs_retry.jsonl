@@ -1,0 +1,7 @@
+{"result": "{\"value\": 260913.00}", "cost_usd": 0.1319006, "turns": 5, "denials": 0, "route": "r3b", "q": "Q3", "run": 2, "seconds": 20.4, "ts": "2026-10-20T12:30:34"}
+{"result": "{\"value\": 1319165.62}", "cost_usd": 0.172254, "turns": 7, "denials": 0, "route": "r3b", "q": "Q4", "run": 2, "seconds": 19.9, "ts": "2026-10-20T12:30:54"}
+{"result": "{\"rows\": [[\"2026-04\", 206692.47], [\"2026-05\", 210905.33], [\"2026-06\", 203150.93], [\"2026-07\", 217483.48], [\"2026-08\", 239566.56], [\"2026-09\", 241366.85]]}", "cost_usd": 0.0506145, "turns": 7, "denials": 0, "route": "r3b", "q": "Q5", "run": 2, "seconds": 27.8, "ts": "2026-10-20T12:31:21"}
+{"result": "{\"rows\": [[\"USA\", 1089041.80], [\"UK\", 230123.82]]}", "cost_usd": 0.14147479999999998, "turns": 6, "denials": 0, "route": "r3b", "q": "Q6", "run": 2, "seconds": 21.0, "ts": "2026-10-20T12:31:42"}
+{"result": "{\"value\": 0.95}", "cost_usd": 0.19191760000000002, "turns": 13, "denials": 0, "route": "r3b", "q": "Q7", "run": 2, "seconds": 36.2, "ts": "2026-10-20T12:32:19"}
+{"result": "{\"value\": 44.06}", "cost_usd": 0.1866741, "turns": 9, "denials": 0, "route": "r3", "q": "Q9", "run": 2, "seconds": 29.5, "ts": "2026-10-20T12:32:48"}
+{"result": "{\"rows\": [[\"Complete\", 246472], [\"Cancelled\", 9283], [\"Returned\", 2485], [\"Shipped\", 1834], [\"Processing\", 839]]}", "cost_usd": 0.1356389, "turns": 6, "denials": 0, "route": "r3b", "q": "Q10", "run": 3, "seconds": 18.0, "ts": "2026-10-20T12:33:06"}

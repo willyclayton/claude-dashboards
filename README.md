@@ -9,14 +9,14 @@
 | Cube model on live Snowflake | Done, 6/6 golden tests pass |
 | Claude Desktop → Cube over MCP | Working |
 | First Claude Dashboard on Cube | Built; tiles confirmed to go through Cube |
-| Head-to-head scenarios vs Omni | Not started (5 defined) |
+| Bake-off, 4 routes (10 questions x 3 runs) | Done 2026-10-20: Cube 100%, Omni 93% pinned / 37% unguided, Claude alone 60% |
 | Plan 2 (Claude improves Omni via Git) | Planned, not started |
 
 ## Do next
 
-1. Ask the data team if `SALE_PRICE * 0.5` is intentional.
-2. Fix the margin basis bug (average margin $24.18 is higher than average price $23.19 because only price is halved).
-3. Write the 10-15 question set, then run the five scenarios.
+1. Ask the data team: is `SALE_PRICE * 0.5` intended, and which Omni topic is authoritative for revenue (two disagree 2x)?
+2. Fix or decide the margin basis (average margin $24.18 is higher than average price $23.19).
+3. Close the open gaps: Omni restricted-user test, Omni business-user metric test, 25-50 questions, two scorers (see Findings section 2).
 
 ## Where everything is
 
@@ -25,6 +25,9 @@
 | See every task and its status | [docs/Project Tracker.csv](docs/Project%20Tracker.csv) |
 | Read what we learned and the gotchas | [docs/Learnings.md](docs/Learnings.md) |
 | Understand the plan, evidence and scorecard | [Plan 1/PLAN.md](Plan%201/PLAN.md) |
+| **Read the test results and evidence (start here for the findings)** | [Plan 1/Findings.md](Plan%201/Findings.md) |
+| See the success criteria and scoring | [Plan 1/Success Criteria.md](Plan%201/Success%20Criteria.md) |
+| Fill in or read the scoring matrix (8 criteria x 4 routes) | [Plan 1/Scoring Matrix.md](Plan%201/Scoring%20Matrix.md) |
 | See the Cube vs Omni scenarios | [Plan 1/PLAN.md](Plan%201/PLAN.md), section "Scenarios to test" |
 | Compare every Omni attribute with Cube (yes/no/sorta) | [docs/Omni vs Cube attributes.md](docs/Omni%20vs%20Cube%20attributes.md) |
 | Learn Docker and Cube basics | [docs/Docker and Cube 101.md](docs/Docker%20and%20Cube%20101.md) |

@@ -37,6 +37,16 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - VS Code opens `.md` files as source by default. To render them every time, set `"workbench.editorAssociations": {"*.md": "vscode.markdown.preview.editor"}` (VS Code about 1.98+).
 - Docker 101 and Cube 101 primer: `docs/Docker and Cube 101.md`.
 
+## Bake-off lessons (2026-10-20; full detail in `Plan 1/Findings.md`)
+
+- **Consistency can hide wrongness.** Claude on its own gave the same wrong revenue every run (100% consistent, 0% right on definition questions).
+- **Omni's risk is topic choice, not arithmetic.** Unguided, its agent used a topic where revenue isn't halved (36.7% match); pointed at the Sales topic it matched 93.3%. Two topics over one table disagreed by 2x.
+- **Headless runs are a usable test rig.** `claude -p` with `--allowedTools` limits Claude to one route's tools and returns cost, turns and time per answer in JSON.
+- **Parallel Omni calls hit HTTP 429.** Use 1-2 workers.
+- **`CUBEJS_DEV_MODE=true` disables auth** (no token and forged tokens work). Production mode needs `CUBEJS_CACHE_AND_QUEUE_DRIVER=memory` (or Cube Store) to run; with it, auth is enforced.
+- **A token with no `country` claim is unrestricted** in our `queryRewrite`, and the MCP wrapper mints such tokens. Per-user identity must be added deliberately.
+- **Live data drifts.** Distinct orders were 252,701 on 10/16 and 254,271 on 10/20; compute the answer key on the day of the run.
+
 ## Context gap: what Cube knows vs what Omni knows
 
 The semantic layer is only as useful to an AI as the context attached to each field. Here is what each tool natively supports, and what we actually used in this repo.

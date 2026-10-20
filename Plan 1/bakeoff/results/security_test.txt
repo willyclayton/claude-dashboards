@@ -1,0 +1,176 @@
+{
+ "token_country_UK": {
+  "UK": 1045428.08
+ },
+ "token_country_USA": {
+  "USA": 4975412.13
+ },
+ "token_no_country": {
+  "USA": 4975412.13,
+  "UK": 1045428.08
+ },
+ "UK_token_asks_for_USA": {},
+ "UK_token_total_no_dimension": 1045428.08,
+ "wrong_secret": {
+  "query": {
+   "measures": [
+    "sales.total_revenue"
+   ],
+   "dimensions": [
+    "sales.users_country"
+   ],
+   "timeDimensions": [],
+   "limit": 10000,
+   "timezone": "UTC",
+   "filters": [],
+   "rowLimit": 10000
+  },
+  "lastRefreshTime": "2026-10-20T17:18:59.394Z",
+  "refreshKeyValues": [
+   {
+    "isWrapper": true,
+    "cache": [
+     {
+      "refresh_key": "14937639"
+     }
+    ],
+    "cached": true,
+    "isNative": true,
+    "jsResult": null,
+    "transformData": null,
+    "rootResultObject": {},
+    "0": {
+     "refresh_key": "14937639"
+    },
+    "length": 1
+   },
+   {
+    "isWrapper": true,
+    "cache": [
+     {
+      "refresh_key": "14937639"
+     }
+    ],
+    "cached": true,
+    "isNative": true,
+    "jsResult": null,
+    "transformData": null,
+    "rootResultObject": {},
+    "0": {
+     "refresh_key": "14937639"
+    },
+    "length": 1
+   }
+  ],
+  "transformedQuery": {
+   "sortedDimensions": [
+    "sales.users_country"
+   ],
+   "sortedTimeDimensions": [],
+   "timeDimensions": [],
+   "measures": [
+    "sales.total_revenue"
+   ],
+   "leafMeasureAdditive": true,
+   "leafMeasures": [
+    "order_items.total_revenue"
+   ],
+   "leafMeasuresFullPaths": [
+    "order_items.total_revenue"
+   ],
+   "measureToLeafMeasures": {
+    "sales.total_revenue": [
+     {
+      "measure": "order_items.total_revenue",
+      "additive": true,
+      "type": "sum"
+     }
+    ]
+   },
+   "hasNoTimeDimensionsWithoutGranularity": true,
+   "allFiltersWithinSelectedDimensions": true,
+   "isAdditive": false,
+   "granularityHierarchies": {},
+   "hasMultipliedMeasures": false,
+   "hasCumulativeMeasures": false,
+   "windowGranularity": null,
+   "filterDimensionsSingleValueEqual": {},
+   "ownedDimensions": [
+    "order_items.users.country"
+   ],
+   "ownedTimeDimensionsWithRollupGranularity": [],
+   "ownedTimeDimensionsAsIs": [],
+   "allBackAliasMembers": {
+    "order_items.total_revenue": "sales.total_revenue",
+    "order_items.users.country": "sales.users_country"
+   },
+   "ungrouped": null,
+   "sortedUsedCubePrimaryKeys": null,
+   "sortedAllCubeNames": null,
+   "hasMultiStage": false
+  },
+  "requestId": "cc9fe8bf-1c6a-4fdb-b2f6-ce5a6f7e292b-span-1",
+  "annotation": {
+   "measures": {
+    "sales.total_revenue": {
+     "title": "Sales Total Revenue",
+     "shortTitle": "Total Revenue",
+     "description": "Total revenue from all sales calculated as the sum of sale prices. The primary top-line metric for business performance.",
+     "type": "number",
+     "meta": {
+      "synonyms": [
+       "gmv",
+       "gross merchandise value",
+       "gross revenue",
+       "sales volume",
+       "total income",
+       "total sales"
+      ]
+     },
+     "drillMembers": [],
+     "drillMembersGrouped": {
+      "measures": [],
+      "dimensions": []
+     }
+    }
+   },
+   "segments": {},
+   "dimensions": {
+    "sales.users_country": {
+     "title": "Sales Users Country",
+     "shortTitle": "Users Country",
+     "description": "Country where the customer is located for international market segmentation.",
+     "type": "string",
+     "meta": {
+      "synonyms": [
+       "customer country",
+       "market country",
+       "nation"
+      ]
+     }
+    }
+   },
+   "timeDimensions": {}
+  },
+  "dataSource": "default",
+  "dbType": "snowflake",
+  "extDbType": "cubestore",
+  "external": false,
+  "slowQuery": false,
+  "data": [
+   {
+    "sales.users_country": "USA",
+    "sales.total_revenue": "4975412.12813791"
+   },
+   {
+    "sales.users_country": "UK",
+    "sales.total_revenue": "1045428.08393587"
+   }
+  ]
+ }
+}
+current_role: DBT_DEMO_ROLE
+show row access policies in schema ANALYTICS_PROD.ECOMM -> 0 rows []
+show masking policies in schema ANALYTICS_PROD.ECOMM -> 0 rows []
+show schemas in database ANALYTICS_PROD -> 71 rows ['ANI_PROD', 'ANI_PROD_DBT_TEST__AUDIT', 'ANI_PROD_RAW', 'COCO_DEMO', 'COCO_DEMO_NEW', 'CONTACT_CENTER', 'CONTENT_GOVERNANCE', 'DBT_AHNINI', 'DBT_AHNINI_DBT_TEST__AUDIT', 'DBT_AHNINI_RAW', 'DBT_ALANCE', 'DBT_AMAHAJAN']
+privileges on ORDER_ITEMS for current role: ['OWNERSHIP', 'SELECT']

@@ -1,0 +1,4 @@
+before {'tile_kpi': 6020840.21207377, 'tile_by_month': 2154283.7579983, 'tile_by_country': 6020840.21207378}
+after {'tile_kpi': 5754404.53607151, 'tile_by_month': 2055489.71261842, 'tile_by_country': 5754404.53607151}
+edit-to-verified seconds 3.4 | files edited: 1 | blocks edited: 1 | tiles changed: 3 of 3
+reverted True
