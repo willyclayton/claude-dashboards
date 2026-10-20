@@ -16,10 +16,11 @@
 |---|---|---|---|
 | G1 | Accuracy unmeasured for routes 1, 3, 4 | Bake-off, 10 questions x 3 runs, answer key from Snowflake SQL | Closed (routes 1, 2, 3). Route 4 shares route 3's engine, not tested separately |
 | G2 | Consistency unmeasured | Each question run 3 times per route | Closed |
-| G3 | Restricted-user security test not run | Cube dev and production mode; Snowflake guardrail check | Closed for routes 1 and 2. **Open for Omni** (needs an Omni restricted test user) |
-| G4 | "Adding a metric" test undefined | Defined and timed on Cube: one metric, three dashboard queries | Closed for Cube mechanics. **Open:** business-user flow in Omni (writes to Omni; not run) |
+| G3 | Restricted-user security test not run | Cube dev and production mode; Snowflake guardrail check | Closed for routes 1 and 2. **Omni attempted, blocked:** impersonation needs an Organization API key; our CLI login is an OAuth user token (section 11) |
+| G4 | "Adding a metric" test undefined | Defined and timed on Cube and on Omni (throwaway branch): one metric, three dashboard queries | Closed for both tools' modeler path. **Open:** business-user UI path in Omni (Documented, not driven) |
 | G5 | Total cost unmeasured | Per-answer model cost and time captured | Partial. Per-answer cost done; hours, licence, hosting open |
 | G6 | Omni auditability unverified | Omni agent shows SQL and field definitions in its answer | Partial. Change history is Documented, not tested |
+| G5b | Warehouse compute per answer unmeasured | Snowflake query history attributed to routes 1 and 2 (section 11) | Closed for routes 1 and 2; Omni's queries not separable |
 | G7 | Non-technical-user task test | Needs a person | **Open** |
 | G8 | Bake-off size (slide says 25-50) | Ran 10 | **Open** |
 | G9 | Route 4 (Omni UI AI) | Cannot be driven from here | **Open** |
@@ -135,6 +136,7 @@ cd "Plan 1/cube-claude-lab" && set -a && . ./.env && set +a && cd ../bakeoff
 ../cube-claude-lab/.venv/bin/python answer_key.py          # answer key from Snowflake
 python3 run_bakeoff.py 3 r1,r2,r3,r3b                        # 3 runs per question per route (WORKERS=2 avoids Omni rate limits)
 python3 score.py                                             # accuracy, consistency, cost
+# round 2: omni_metric_change_test.py, omni_latency_test.py (need pyarrow and the omni CLI), latency_scale_test.py
 ../cube-claude-lab/.venv/bin/python security_test.py         # Cube dev mode + Snowflake guardrails
 ../cube-claude-lab/.venv/bin/python change_metric_test.py    # metric change timing
 ```
@@ -147,3 +149,87 @@ Files (all in `Plan 1/bakeoff/`): `questions.py`, `answer_key.py`, `run_bakeoff.
 2. Which topic is authoritative for revenue, and can the other be retired or hidden from the AI?
 3. What is the correct return-rate denominator?
 4. Should "exclude Cancelled and Returned" be built into the revenue measure rather than left as AI guidance?
+
+## 11. Round 2 (2026-10-20): the "Not tested" cells in the success criteria grid
+
+The grid ([success-criteria-grid.xlsx](success-criteria-grid.xlsx)) was re-filled. Everything below was run or looked up on 2026-10-20; scripts and raw output are in `Plan 1/bakeoff/`.
+
+### 11.1 Omni: change one metric (Tested)
+
+[`omni_metric_change_test.py`](../../Plan%201/bakeoff/omni_metric_change_test.py), output in [`results/omni_metric_change_test.txt`](../../Plan%201/bakeoff/results/omni_metric_change_test.txt). On a throwaway branch of the Omni model (never merged, deleted afterwards), `total_revenue` in the Sales topic was changed to exclude Cancelled and Returned.
+
+| | Cube | Omni |
+|---|---|---|
+| Files / blocks edited | 1 / 1 | 1 / 1 |
+| Edit to verified | 3.4 s | 5.6 s (branch created in 0.6 s) |
+| Validation | n/a | `models validate`: no errors |
+| Dashboard-style queries changed | 3 of 3 | 3 of 3 |
+| Production untouched | yes (reverted) | yes (branch deleted) |
+| Total after the change | 5,754,404.54 | 5,754,404.54 |
+
+The two tools agree to the cent after the same change. This is the **modeler** path via the Omni CLI. The business-user path in Omni's UI (create a metric, open it for review, promote it) is Documented in Omni's branch-mode docs and was not driven. Omni's git integration is not configured on this model.
+
+### 11.2 Latency, concurrency, scale (Tested)
+
+[`latency_scale_test.py`](../../Plan%201/bakeoff/latency_scale_test.py), [`omni_latency_test.py`](../../Plan%201/bakeoff/omni_latency_test.py).
+
+| Measure | Result |
+|---|---|
+| Snowflake direct, result cache off, median of 5 | 0.26 s |
+| Snowflake direct, result cache on, median of 5 | 0.18 s |
+| Cube REST, cold (5 distinct queries), median | 0.37 s |
+| Cube REST, cached, median of 5 | 0.015 s |
+| Omni semantic query, median of 5 (all cache MISS) | 1.76 s |
+| Cube, 20 concurrent users with their own tokens | 0.66 s wall (same query, so cache-served) |
+| Omni, 10 concurrent queries | 3.0 s wall, max 3.0 s |
+| Minting 100 user tokens | 2 ms (identity and SSO are separate work) |
+| End to end through Claude, per answer | 14.9 s (route 1), 9.0 s (Cube), 34.2 s and 37.0 s (Omni) |
+
+Cube adds overhead on a cold query (0.37 s against 0.26 s direct) and wins on repeats (15 ms). The end-to-end times are dominated by Claude's own time, not the query engine.
+
+### 11.3 Warehouse compute per answer (Tested, partial)
+
+Attributed from Snowflake query history by user and query shape during the bake-off (the routes ran at the same time, so attribution is by shape, not by time window):
+
+| Route | Warehouse queries for 30 answers | Total elapsed | Per answer |
+|---|---|---|---|
+| 1. Claude on its own | 63 | 41.5 s | 2.1 queries, 1.4 s |
+| 2. Cube | 32 | 3.7 s | 1.1 queries, 0.12 s |
+| 3/4. Omni | not separable | n/a | Omni's queries run under shared connection users with other demos |
+
+Elapsed time is a proxy: on an X-Small warehouse with auto-suspend, billed credits are dominated by resume and the 60-second minimum, so these numbers show relative load, not credits. Claude on its own re-queries the warehouse about twice per answer; Cube issues about one and caches repeats.
+
+### 11.4 Traceability and observability (Tested for Cube and Snowflake)
+
+- **Git trace:** `git log -S` found the commit, author and date for an `ai_context` change in 0.08 s. It works only for someone who can use Git.
+- **Cube Core logs:** the container logged 4,269 query lines during this work, with no usage analytics, popular-question or failed-question views. Cube Cloud adds query history (1 day on Free, 7 days on Premium, per cube.dev/pricing).
+- **Snowflake query history** shows every SQL statement but not the user's question or any rating.
+- **Omni (Documented):** AI Hub (Quality, Usage, Overview), Analytics > AI logs and Evals cover question logs and failed or low-rated answers; no dedicated popular-questions ranking (docs.omni.co/administration/ai-hub, /administration/analytics, /ai/evals).
+
+### 11.5 Sharing Claude Dashboards: a real constraint for Route 2 (Tested + third-party)
+
+- **Observed:** our dashboard's Cube queries showed "This query isn't refreshing automatically" in the side panel. The Cube MCP server runs locally over stdio.
+- **Third-party coverage (tabulareditor.com, not Anthropic):** live dashboards need a connector whose MCP server is **hosted remotely**; a local server can only feed extracts while you build; viewers' queries run with their own connection and permissions; datasets cap at 8 MB; the page can only be changed by Claude. Treat as Asserted until checked against Anthropic's own docs, which a search did not surface.
+- **Consequence:** to share a live Cube-backed dashboard, the Cube MCP must be hosted (a tunnel or Cube Cloud's MCP). Omni's connector is already remote, so this doesn't apply to routes 3 and 4.
+
+### 11.6 Omni security: attempted, blocked
+
+Omni's docs say a query can run as another user only with an **Organization API key** passing `userId` ("a PAT cannot impersonate another user"). Our CLI profile uses an OAuth user login and the CLI exposes no `userId` option, so the restricted-user test could not be run without creating an API key and a test user. Per the docs: MCP queries run under the signed-in user's permissions; access filters use user attributes; AI queries respect permitted topics. **Still open.**
+
+### 11.7 Omni findings from the docs
+
+- **Topic overlap may be fixable at the connector:** Omni's MCP can be scoped to a model and topic through setup headers (docs.omni.co/ai/mcp). Not tried; likely closes the unguided accuracy gap (36.7%).
+- **MCP is not guaranteed to equal the in-app chat:** both use Omni's AI pipeline, but the docs do not promise identical answers. The Omni (route 4) column therefore uses the MCP runs as a proxy, labelled as such.
+- **Pricing:** the docs give no platform price. AI use is credit-based, with overage at $1.00 per credit after an admin accepts it (docs.omni.co/ai/settings/usage). Cube Cloud: Free $0, Starter $40 per developer per month, Premium $80 per developer per month plus Explorer $40 and Viewer $20 per user (cube.dev/pricing).
+- **Sharing:** five documented routes: Share dialog with Viewer/Editor/Manager/Owner roles, folder permissions, scheduled deliveries, PDF/CSV download, and embed.
+
+### 11.8 Still not tested, and why
+
+| Cell | Blocker |
+|---|---|
+| Ease of use (non-technical user) | needs a person; no trial run |
+| Modularity on a finished Claude dashboard | not tried |
+| Opportunity cost, setup hours, weekly upkeep | need a time log over weeks |
+| Omni restricted-user security | needs an Organization API key and a test user |
+| Omni in-app chat (route 4) accuracy, consistency, cost | not driven; MCP used as proxy |
+| Omni platform licence cost | not public |

@@ -1,0 +1,3 @@
+omni_query_median_s 1.76 cache types ['MISS', 'MISS', 'MISS', 'MISS', 'MISS']
+omni_10_concurrent wall_s 3.02 p50 2.15 max 3.01
+impersonation probe: config file not found at ~/.config/omni/config.json

@@ -1,0 +1,14 @@
+{
+ "cube_cold_median_s": 0.373,
+ "cube_cached_median_s": 0.015,
+ "snowflake_direct_no_result_cache_median_s": 0.256,
+ "snowflake_direct_result_cache_median_s": 0.176,
+ "mint_100_tokens_s": 0.0023,
+ "cube_20_concurrent_users": {
+  "wall_s": 0.66,
+  "p50_s": 0.65,
+  "max_s": 0.66
+ },
+ "git_trace_seconds": 0.082,
+ "git_trace_result": "144165c|willyclayton|2026-10-16|Connect Cube to Snowflake via PAT, pass golden tests, rewrite Plan 1 docs"
+}

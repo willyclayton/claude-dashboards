@@ -47,6 +47,15 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - **A token with no `country` claim is unrestricted** in our `queryRewrite`, and the MCP wrapper mints such tokens. Per-user identity must be added deliberately.
 - **Live data drifts.** Distinct orders were 252,701 on 10/16 and 254,271 on 10/20; compute the answer key on the day of the run.
 
+## Round 2 lessons (2026-10-20; findings section 11)
+
+- **Cube and Omni agree to the cent after the same metric change** (5,754,404.54), and both changed all 3 dashboard queries from one edit.
+- **Claude Dashboards are only live for viewers if the MCP is hosted remotely.** Our local stdio Cube MCP showed "This query isn't refreshing automatically". Third-party coverage says the same; confirm with Anthropic's docs.
+- **Omni's MCP can be scoped to a topic via setup headers**, a likely fix for the unguided topic-overlap miss (untried).
+- **Omni impersonation needs an Organization API key**; a CLI OAuth login cannot do the restricted-user test.
+- **Snowflake query history shows other users' queries** for this role, so per-route attribution works by user and query shape, not by time (routes ran concurrently).
+- **The omni CLI is a safe test rig:** create a branch, `yaml-create`, `validate`, `query run --body` with `branchId`, then `delete-branch`. Query results come back as base64 Arrow (needs pyarrow to read).
+
 ## Context gap: Cube vs Omni
 
 Full, verified attribute-by-attribute table: [omni-vs-cube-attributes.md](reference/omni-vs-cube-attributes.md). In short: Cube matches Omni on structure (SQL, joins, descriptions, access, caching) and exceeds it on performance. The gap is the AI-facing layer: `synonyms`, `all_values`, `sample_values`, `sample_queries`, `ai_fields` and `ai_chat_topics` have no real Cube equivalent. Cube's docs name `meta.ai_context` for AI agents, but Core's API doesn't act on it, so our MCP wrapper reads `meta` itself. The "exclude cancelled and returned" rule is advisory text in both tools unless built into the measure (view `default_filters` or a measure `filters` block does that in Cube; tested).

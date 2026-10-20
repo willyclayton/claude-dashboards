@@ -45,8 +45,8 @@ Tags: **Tested** = we ran it (see [Findings.md](findings.md)). **Documented** = 
 | Setup and upkeep | 4. Omni (+ Claude) | 3 | Documented | Managed product, modelers own the model, no glue to build. Not timed |
 | Adding a metric | 1. Claude on its own | 0 | Asserted | No governed place; every dashboard carries its own SQL |
 | Adding a metric | 2. Claude + 3rd-party layer (Cube Core) | DE 2 · Biz 1 | Tested | Engineer seat: 1 file, 1 block, 3.4 s, 3 of 3 dashboard queries changed (Tested). Business user cannot edit YAML: request to data engineering, edit, push, deploy (process stated by the team, not timed) |
-| Adding a metric | 3. Claude + Omni | 3 | Documented | Business user or modeler creates a metric and promotes it through a reviewed branch (docs.omni.co/content/develop/branch-mode). Not run by us |
-| Adding a metric | 4. Omni (+ Claude) | 3 | Documented | Same model change, made hands-on in Omni's UI. Not run by us |
+| Adding a metric | 3. Claude + Omni | 3 | Documented | Business user or modeler creates a metric and promotes it through a reviewed branch (docs.omni.co/content/develop/branch-mode). Modeler path Tested (CLI, 5.6 s, 1 block, 3 of 3 queries changed); UI path not driven |
+| Adding a metric | 4. Omni (+ Claude) | 3 | Documented | Same model change, made hands-on in Omni's UI. Modeler path Tested (CLI, 5.6 s, 1 block, 3 of 3 queries changed); UI path not driven |
 | Total cost | 1. Claude on its own | — | — | Not measured. Per-answer model cost $0.123, 14.9 s |
 | Total cost | 2. Claude + 3rd-party layer (Cube Core) | — | — | Not measured. Per-answer model cost $0.048, 9.0 s (lowest); Cube Core is free but engineer hours are not |
 | Total cost | 3. Claude + Omni | — | — | Not measured. Per-answer model cost $0.158, 34.2 s |
@@ -65,7 +65,7 @@ Tags: **Tested** = we ran it (see [Findings.md](findings.md)). **Documented** = 
 | Auditability | 4. Omni (+ Claude) | 3 | Documented | Same model history and field definitions |
 | Security | 1. Claude on its own | FAIL | Tested | Snowflake role DBT_DEMO_ROLE has OWNERSHIP on ORDER_ITEMS and sees 71 schemas; 0 row access policies, 0 masking policies. Nothing between Claude and the data |
 | Security | 2. Claude + 3rd-party layer (Cube Core) | FAIL as configured | Tested | Dev mode: no token and forged tokens return all data. Production mode enforces auth and the country filter, but a token with no country claim sees everything, and our MCP wrapper mints exactly that token |
-| Security | 3. Claude + Omni | Untested (docs: PASS) | Documented | MCP queries run under the signed-in user's permissions; access filters apply (docs.omni.co/ai/mcp/authentication). Needs a restricted Omni user to verify |
+| Security | 3. Claude + Omni | Untested (docs: PASS) | Documented | MCP queries run under the signed-in user's permissions; access filters apply (docs.omni.co/ai/mcp/authentication). Attempted: impersonation needs an Organization API key (see findings 11.6) |
 | Security | 4. Omni (+ Claude) | Untested (docs: PASS) | Documented | User attributes, access filters, SAML/OIDC, SCIM; AI respects permitted topics (docs.omni.co/ai/security) |
 | Ease of use and sharing | 1. Claude on its own | 1 | Asserted | Good for quick drafts; no point-and-click editing, schedules, downloads, drilldowns or links |
 | Ease of use and sharing | 2. Claude + 3rd-party layer (Cube Core) | 1 | Asserted | Claude Dashboards built by chat with per-tile SQL, but no schedules or folders; metrics live in YAML. No non-technical task test |

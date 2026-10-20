@@ -25,6 +25,7 @@
 |---|---|
 | **Read the test results and evidence** | [docs/plan-1/findings.md](docs/plan-1/findings.md) |
 | See the scoring matrix (8 criteria x 4 routes) | [docs/plan-1/scoring-matrix.md](docs/plan-1/scoring-matrix.md) |
+| Open the filled-in success criteria grid (spreadsheet) | [docs/plan-1/success-criteria-grid.xlsx](docs/plan-1/success-criteria-grid.xlsx) |
 | See the success criteria and North Star | [docs/plan-1/success-criteria.md](docs/plan-1/success-criteria.md) |
 | Read the Plan 1 plan, progress and risks | [docs/plan-1/plan.md](docs/plan-1/plan.md) |
 | See every task and its status | [docs/project-tracker.csv](docs/project-tracker.csv) |

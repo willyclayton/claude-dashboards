@@ -1,0 +1,13 @@
+before {'kpi': 6020840.21, 'by_country': 6020840.21, 'by_status': 6020840.21}
+branch a8c6560a-82d8-42c0-9287-c1bd50931bfc created in 0.6 s
+yaml-create: {
+  "fileName": "analytics_prod_ecomm__sales.topic",
+  "success": true
+}
+validate errors: none
+after  {'kpi': 5754404.54, 'by_country': 5754404.54, 'by_status': 5754404.54}
+edit-to-verified seconds: 5.6 | files edited: 1 | blocks edited: 1 | tiles changed: 3 of 3
+main unchanged: True
+delete branch: {
+  "success": true
+}

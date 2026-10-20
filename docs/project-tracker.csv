@@ -45,7 +45,13 @@ ID,Plan,Workstream,Task,Status,Owner,Date,Evidence / notes,Est hours,Next action
 44,1,Data quality,Return-rate definition differs: Omni about 1.00 vs ported 0.95,Not started,Will,2026-10-20,Q7 miss on pinned Omni,0.25,Ask data team for the denominator
 45,1,Security,Cube lab runs in dev mode: no token and forged tokens return all data,Not started,Claude,2026-10-20,Production mode enforces auth; wrapper token has no country claim,1,Decide lab vs production config; add per-user token issuing
 46,1,Security,Snowflake role is DBT_DEMO_ROLE (OWNERSHIP on ORDER_ITEMS); no row or masking policies,Not started,Will,2026-10-20,Ask admin for a read-only role,0.25,
-47,1,Testing,Omni restricted-user security test,Not started,Will + Claude,2026-10-20,Needs an Omni test user with attribute filter,1.5,
-48,1,Testing,"Time the Cube request-to-live path (ticket, engineer, push, deploy)",Not started,Will,2026-10-20,Persona lens: business user cannot self-serve in Cube,1,
-49,1,Testing,Omni business-user create-and-promote metric test,Not started,Will + Claude,2026-10-20,Branch mode; writes to Omni on a branch,1.5,
+47,1,Testing,Omni restricted-user security test,Blocked,Will + Claude,2026-10-20,Impersonation needs an Organization API key; CLI login is an OAuth user token (findings 11.6),1.5,Create an org API key and a test user
+48,1,Testing,"Time the Cube request-to-live path (ticket, engineer, push, deploy)",Not started,Will,2026-10-20,Engineer edit 3.4 s measured; ticket-to-deploy path not timed,1,
+49,1,Testing,Omni business-user create-and-promote metric test,Partial,Will + Claude,2026-10-20,"Modeler path via Omni CLI Tested 2026-10-20 (5.6 s, 1 block, 3/3 queries); UI path not driven",1.5,Drive the UI path with a business user
 50,1,Testing,Scale bake-off to 25-50 questions; two independent scorers,Not started,Will + Claude,2026-10-20,Slide calls for 25-50,3,
+51,1,Findings,Round 2: re-fill Not tested cells in the success criteria grid,Done,Will + Claude,2026-10-20,Plan 1 docs/plan-1/success-criteria-grid.xlsx; findings 11,1,
+52,1,Testing,"Latency median of 5, 20-user concurrency, Git trace, warehouse compute per answer",Done,Claude,2026-10-20,findings 11.2-11.4,0.5,
+53,1,Architecture,Host the Cube MCP remotely so Claude Dashboards stay live for viewers,Not started,Claude,2026-10-20,Local stdio MCP is not live for viewers (findings 11.5),2,
+54,1,Testing,Try scoping the Omni MCP to the Sales topic via setup headers,Not started,Claude,2026-10-20,Likely fix for the unguided 36.7% accuracy (findings 11.7),0.5,
+55,1,Testing,"Non-technical-user trials: ease of use, modularity, shareability",Not started,Will,2026-10-20,Needs people,3,
+56,1,Testing,Log setup and weekly upkeep hours per route for opportunity cost,Not started,Will,2026-10-20,Needs weeks,2,
