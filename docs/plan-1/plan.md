@@ -22,7 +22,7 @@
 
 **Bottom line today.** Don't cite this as "Cube is as good as Omni." What is proven: the semantic layer ports easily and its numbers match the warehouse exactly. What is open: whether Claude uses it correctly, and what it costs to run and maintain.
 
-**Test results and evidence (2026-10-20):** see [Findings.md](Findings.md): 4-route bake-off, security and metric-change tests. **Success criteria and scoring:** see [Success Criteria.md](Success%20Criteria.md) (eight criteria, three routes, five seats, and the three tests that decide it).
+**Test results and evidence (2026-10-20):** see [Findings.md](findings.md): 4-route bake-off, security and metric-change tests. **Success criteria and scoring:** see [Success Criteria.md](success-criteria.md) (eight criteria, three routes, five seats, and the three tests that decide it).
 
 ## 2. How it works
 
@@ -46,7 +46,8 @@
 | 2 | Port Omni's `analytics_prod_ecomm__sales` topic to Cube YAML | Done | 5 files, about 570 lines, compiles |
 | 3 | Connect Cube to Snowflake | **Done 2026-10-16** | Query returned 259,301 items and 252,701 orders |
 | 4 | Golden accuracy tests | **Done, 6/6 pass** | See section 4 |
-| 5 | Connect Claude (local MCP wrapper or Cube Cloud MCP) | **Done 2026-10-16** | Local stdio MCP in Claude Desktop; revenue-by-month query returned. See `docs/Learnings.md` |
+| 5 | Connect Claude (local MCP wrapper or Cube Cloud MCP) | **Done 2026-10-16** | Local stdio MCP in Claude Desktop; revenue-by-month query returned. See `docs/learnings.md` |
+| 5c | 4-route bake-off (10 questions x 3 runs), security and metric-change tests | **Done 2026-10-20** | [findings.md](findings.md) |
 | 5b | Build first Claude Dashboard on the cube tools | **Done 2026-10-16** | "Ecommerce sales: last 6 months"; tiles use cube `query_data`; SQL shown per tile |
 | 6 | Run 10-15 questions three ways: Claude alone, Claude + Cube, Claude + Omni | Not started | Question set not written |
 | 7 | Definition-change test: change one metric in Cube and in Omni, time both | Not started | |
@@ -71,22 +72,15 @@ Each test compares Cube's answer to hand-written SQL run directly on Snowflake.
 | Revenue by customer country | Join fan-out (no double counting) | Pass |
 | Return rate (0-100) | Ratio math and units | Pass |
 
-Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/python tests/run_golden.py`
+Run with: `cd "Plan 1/cube-claude-lab" && set -a && . ./.env && set +a && .venv/bin/python tests/run_golden.py`
 
-## 5. Scorecard: Cube vs Omni so far
+## 5. Scorecard
 
-| Area | Where it stands | Verdict |
-|---|---|---|
-| Defining metrics once | Omni's topic ported in about one session, mostly mechanical | **Close** |
-| Deterministic SQL | Cube generates SQL from definitions | **Close** |
-| Numbers match the warehouse | 6 of 6 golden tests pass on live data | **Proven** |
-| Claude picks the right metric | Descriptions and synonyms carried over; untested with real questions | Unproven |
-| Changing a definition | Cube: edit YAML, test, merge. Omni: modeling tool with branches. Not timed | Unproven |
-| Dashboards | Claude Dashboards is chat-built and can call the cube MCP tools; first build ran its queries as cube "Query data" calls. Whether the finished tiles stay on Cube is unchecked | **Confirmed** for the first build |
-| Who is asking (permissions) | Cube can filter rows by user, but needs per-person sign-in. Local setup uses one shared login | Gap |
-| Ease for non-engineers | Omni has a visual modeler. Cube is YAML in Git | Gap |
-| Running it | Omni is managed. Cube Core means we own hosting, auth, upgrades, monitoring | Gap, cost to quantify |
-| Cost | Cube Core is free; people-time is not. Cube Cloud pricing unverified | Unknown |
+The current scorecard is the [scoring matrix](scoring-matrix.md) (8 criteria x 4 routes), with the evidence behind each cell in [findings.md](findings.md). Summary after the 2026-10-20 bake-off:
+
+- **Accuracy and consistency:** Cube 100% / 100%; Omni 93% / 90% when pointed at the Sales topic, 37% unguided; Claude alone 60% / 100% (consistently wrong on definitions).
+- **Omni leads on** who can change a metric (business user), auditability for non-technical users, and self-service (mostly Documented, not run by us).
+- **Open:** hours and cost of ownership, Omni restricted-user test, Omni business-user metric test, 25-50 questions, two scorers.
 
 ## 6. Findings so far
 
@@ -130,27 +124,12 @@ Run with: `cd cube-claude-lab && set -a && . ./.env && set +a && .venv/bin/pytho
 
 ## 9. Next steps (in order)
 
-1. Fix the `avg_margin` basis bug the dashboard exposed (price is halved, margin is not).
-2. Re-check the Desktop revenue numbers against the golden tests.
-3. Write the 10-15 question set with expected answers.
-4. Ask Claude the questions through Cube.
-5. Run the same questions through Omni and score all three arms.
-6. Time a definition change in both tools.
-7. Write up accuracy, hours, cost and upkeep for the data team.
+1. Ask the data team: is `SALE_PRICE * 0.5` intended, which Omni topic is authoritative for revenue, and what is the return-rate denominator?
+2. Decide the `avg_margin` basis (price is halved, margin is not).
+3. Close the open gaps listed in [findings.md](findings.md) section 2: Omni restricted-user test, Omni business-user metric test, 25-50 questions, two independent scorers, hours and cost.
+4. Write up for the data team.
 
-### Scenarios to test (Cube vs Omni, head to head)
-
-Goal: find where Cube + Claude could stand in for Omni, and where it can't without someone technical. Each scenario is run in both tools and scored.
-
-| # | Scenario | What we compare | Source |
-|---|---|---|---|
-| 1 | **How easy it is to change a metric** | Time and steps to change one definition (for example, put the cancelled/returned exclusion into `total_revenue`) in Cube YAML vs Omni's modeler. Who can do it: analyst or engineer? | Will |
-| 2 | **SQL output and number verification** | Is the generated SQL readable and correct? Can a person check it against the warehouse (golden tests, "SQL behind the figures" in the dashboard) without help? | Will |
-| 3 | **How scalable it is** | More metrics, more tables, more users, bigger data. Hosting, auth, per-user permissions, upgrades, and the cost of owning Cube Core vs a managed Omni | Will |
-| 4 | **Who can set it up and maintain it** | Hypothesis: Cube needs a data engineer to set up, modify relationships and read the SQL; Omni doesn't. Measure it by what a non-engineer can do unaided in each tool | Will |
-| 5 | **Consistency across clients** | Does the same question give the same number in Claude chat, Claude Dashboards, and Omni, given that rules like "exclude cancelled" currently live in `ai_context` text rather than the measure? | Suggested, from the dashboard run |
-
-Any further question of this kind (cost, governance, permissions) goes on this list. If Omni wins on 1, 3 and 4 without needing an engineer, that is the answer to "what does Omni add?".
+The head-to-head scenarios (change a metric, SQL verification, scalability, who maintains it, consistency across clients) are folded into the [success criteria](success-criteria.md) and tested in [findings.md](findings.md).
 
 ## 10. Hours
 
@@ -171,13 +150,14 @@ Estimates; replace with measured numbers. The data team will ask what build and 
 
 ## 11. Reproduce it
 
-1. `cd cube-claude-lab && cp .env.example .env`
+1. `cd "Plan 1/cube-claude-lab" && cp .env.example .env`
 2. In `.env`: set `CUBEJS_API_SECRET` (`openssl rand -hex 32`) and `CUBEJS_DB_PASS` to a Snowflake PAT scoped to `DBT_DEMO_ROLE` (Snowsight > Profile > Authentication > Generate token)
 3. `docker compose up -d`, then query `http://localhost:4000/cubejs-api/v1/load`
 4. Run the golden tests (command in section 4)
 
 ## 12. Files
-- `../docs/`: `Learnings.md` (running log), `Project Tracker.csv` (master tracker), `Docker and Cube 101.md`
-- `cube-claude-lab/`: Cube model (`model/`), MCP wrapper (`mcp/`), tests (`tests/`), `docker-compose.yml`
-- `omni-source/`: the Omni topic the Cube model was converted from
+- `Plan 1/bakeoff/`: bake-off, security and metric-change test scripts and raw results
+- `docs/`: see the [README](../../README.md) for the full map
+- `Plan 1/cube-claude-lab/`: Cube model (`model/`), MCP wrapper (`mcp/`), tests (`tests/`), `docker-compose.yml`
+- `Plan 1/omni-source/`: the Omni topic the Cube model was converted from
 - `Cube Core + Claude_ hands-on lab.md`: original lab guide

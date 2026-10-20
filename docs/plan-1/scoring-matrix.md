@@ -1,6 +1,6 @@
 # Plan 1: Scoring Matrix (8 criteria x 4 routes)
 
-*Companion to [Success Criteria.md](Success%20Criteria.md). Evidence and method: [Findings.md](Findings.md). CSV copy: [Scoring Matrix.csv](Scoring%20Matrix.csv). Updated 2026-10-20 after the bake-off.*
+*Companion to [Success Criteria.md](success-criteria.md). Evidence and method: [Findings.md](findings.md). CSV copy: [Scoring Matrix.csv](scoring-matrix.csv). Updated 2026-10-20 after the bake-off.*
 
 > **Status:** scores now rest on tests we ran where tagged **Tested**. Single scorer; two independent scorers are still required before anything customer-facing. Omni cells are mostly **Documented** (from Omni's docs), because the Omni business-user flow and a restricted Omni user were not run.
 
@@ -26,7 +26,7 @@
 | **Security** | **FAIL** [Tested] | **FAIL as configured** [Tested] | **Untested (docs: PASS)** [Documented] | **Untested (docs: PASS)** [Documented] |
 | **Ease of use and sharing** | **1** [Asserted] | **1** [Asserted] | **2** [Documented] | **3** [Documented] |
 
-Tags: **Tested** = we ran it (see [Findings.md](Findings.md)). **Documented** = Omni's docs say so, linked. **Asserted** = expectation, never published.
+Tags: **Tested** = we ran it (see [Findings.md](findings.md)). **Documented** = Omni's docs say so, linked. **Asserted** = expectation, never published.
 
 ## 2. How to read it (the lens that matters)
 

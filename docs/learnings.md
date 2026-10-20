@@ -35,9 +35,9 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - This Claude Code session can't see or drive Claude Desktop. Anything inside Desktop (including Claude Dashboards) has to be done by pasting a prompt there and relaying the result.
 - `ListAgents` showed no other Claude Code sessions, so there was nothing to close. The Claude desktop app is a separate process.
 - VS Code opens `.md` files as source by default. To render them every time, set `"workbench.editorAssociations": {"*.md": "vscode.markdown.preview.editor"}` (VS Code about 1.98+).
-- Docker 101 and Cube 101 primer: `docs/Docker and Cube 101.md`.
+- Docker 101 and Cube 101 primer: `docs/reference/docker-and-cube-101.md`.
 
-## Bake-off lessons (2026-10-20; full detail in `Plan 1/Findings.md`)
+## Bake-off lessons (2026-10-20; full detail in `docs/plan-1/findings.md`)
 
 - **Consistency can hide wrongness.** Claude on its own gave the same wrong revenue every run (100% consistent, 0% right on definition questions).
 - **Omni's risk is topic choice, not arithmetic.** Unguided, its agent used a topic where revenue isn't halved (36.7% match); pointed at the Sales topic it matched 93.3%. Two topics over one table disagreed by 2x.
@@ -47,33 +47,9 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - **A token with no `country` claim is unrestricted** in our `queryRewrite`, and the MCP wrapper mints such tokens. Per-user identity must be added deliberately.
 - **Live data drifts.** Distinct orders were 252,701 on 10/16 and 254,271 on 10/20; compute the answer key on the day of the run.
 
-## Context gap: what Cube knows vs what Omni knows
+## Context gap: Cube vs Omni
 
-The semantic layer is only as useful to an AI as the context attached to each field. Here is what each tool natively supports, and what we actually used in this repo.
-
-| Context for the AI | Cube Core | Omni | In this repo |
-|---|---|---|---|
-| Field name, SQL, type | `name`, `sql`, `type` | `sql`, type | Both, ported 1:1 |
-| Human label | `title` (optional) | `label` | Omni topic has labels; Cube model relies on `name` |
-| Description | `description` (native) | `description` (native) | 66 in Omni, 67 in Cube; carried over |
-| Synonyms | **Not native.** Free-form `meta.synonyms` only | `synonyms` (native, first-class) | 65 in each; in Cube they are inert metadata |
-| Model-wide AI instructions | **Not native.** `meta.ai_context` on the view | `ai_context` on the topic (native) | One block (rounding, exclude cancelled/returned) |
-| Sample questions | None | `sample_queries` | Not used in either |
-| Which fields the AI may see | `public` / `shown`, `includes`/`excludes` in views | `ai_fields` | Cube: the `sales` view is the only public surface |
-| Value hints for filters | None | `all_values`, `sample_values` | Not used |
-| Topic-level routing for the AI | None | `ai_chat_topics` | Not used |
-| Row-level access | `queryRewrite`, `access_policy` (native) | User attributes, access filters | Cube: country filter via `queryRewrite` |
-| Joins, measures, segments, filters | Native | Native | Ported |
-
-> Full, verified attribute-by-attribute table: [Omni vs Cube attributes](Omni%20vs%20Cube%20attributes.md). It corrects two things below: Cube's docs do mention `meta.ai_context` for AI agents (a convention, not enforced by Core), and view `default_filters` exist for always-on filters.
-
-### What this means
-
-- **Cube has almost no AI-context layer of its own.** `meta` is a free-form bucket that Core returns from `/meta`. Cube's docs name an `ai_context` key for AI agents, but Core's API doesn't act on it, and there is no `synonyms`, `all_values`, `sample_values` or `sample_queries`. The synonyms and `ai_context` in our model do nothing by themselves.
-- **They only work because our MCP wrapper reads them.** `mcp/server.py` pulls `meta.synonyms` and `meta.ai_context` out of `/meta` and hands them to Claude in `describe_data`. That is custom code we own and maintain. In Omni the same properties are first-class and used by its AI with no extra code.
-- **Consequence for numbers:** the "exclude cancelled and returned" rule is advisory text in both tools. Claude followed it in the dashboard, but a client that ignores `meta.ai_context` (or any non-Claude consumer of the Cube API) gets different revenue. Putting the rule inside the measure (`filters` on the measure) is the only way to enforce it in Cube.
-- **Missing in both:** sample queries, value hints and topic routing were never set up here, so neither side has been tested with its full AI context.
-- **Takeaway for the data team:** porting definitions is easy; porting the AI-facing context is where Cube needs extra engineering. This is evidence for scenarios 4 and 5 in `Plan 1/PLAN.md`.
+Full, verified attribute-by-attribute table: [omni-vs-cube-attributes.md](reference/omni-vs-cube-attributes.md). In short: Cube matches Omni on structure (SQL, joins, descriptions, access, caching) and exceeds it on performance. The gap is the AI-facing layer: `synonyms`, `all_values`, `sample_values`, `sample_queries`, `ai_fields` and `ai_chat_topics` have no real Cube equivalent. Cube's docs name `meta.ai_context` for AI agents, but Core's API doesn't act on it, so our MCP wrapper reads `meta` itself. The "exclude cancelled and returned" rule is advisory text in both tools unless built into the measure (view `default_filters` or a measure `filters` block does that in Cube; tested).
 
 ## Carried over from Plan 1 (earlier learnings)
 

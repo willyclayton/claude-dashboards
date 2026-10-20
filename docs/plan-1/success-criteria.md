@@ -45,8 +45,8 @@ Each is judged from **five seats**: data engineer, modeler, Claude admin, techni
 
 | Criterion | Evidence in this repo | Status | Still needed |
 |---|---|---|---|
-| Setup and upkeep | Cube + Snowflake + Claude built in about one session with Claude Code; Docker for Cube; roughly 1 h Snowflake access; hours estimates in `PLAN.md` section 10 | Rough | Time log per route with roles and weekly hours; Omni, Cube Cloud, dbt, SSV not done |
-| Adding a metric | Not defined as a test yet. `default_filters` and measure `filters` tried in Cube (see `docs/Learnings.md`) | Not started | Define the test, time it, count people and edits per route |
+| Setup and upkeep | Cube + Snowflake + Claude built in about one session with Claude Code; Docker for Cube; roughly 1 h Snowflake access; hours estimates in [plan.md](plan.md) section 10 | Rough | Time log per route with roles and weekly hours; Omni, Cube Cloud, dbt, SSV not done |
+| Adding a metric | Not defined as a test yet. `default_filters` and measure `filters` tried in Cube (see `docs/learnings.md`) | Not started | Define the test, time it, count people and edits per route |
 | Total cost | Free Cube used; nothing measured | Not started | Hours, opportunity cost by role, Cube Cloud pricing, tokens, warehouse compute, Omni license |
 | Accuracy | **6/6 golden tests pass** vs hand-written SQL; Desktop revenue-by-month matched the model | Partial | Answer-key SQL per question; golden set run on every route |
 | Consistency | Nothing measured. Known risk: "exclude cancelled/returned" lives in `ai_context` text, not the measure | Not started | Each question 3x per route, across Claude, MCP and the Omni UI |
@@ -56,13 +56,13 @@ Each is judged from **five seats**: data engineer, modeler, Claude admin, techni
 | Claude to Omni | A Claude dashboard can be imported into Omni (import tool exists in the Omni connector); not yet exercised here | Partial | Whether both need the identical warehouse connection, and what Omni does from Claude |
 | Competitors | None | Not started | Research on how others handle each route |
 
-**Evidence:** [Findings.md](Findings.md) holds the test results behind every score.
+**Evidence:** [Findings.md](findings.md) holds the test results behind every score.
 
-**Scoring matrix:** [Scoring Matrix.md](Scoring%20Matrix.md) holds the 8 criteria x 4 routes grid, rubric and score sheet.
+**Scoring matrix:** [Scoring Matrix.md](scoring-matrix.md) holds the 8 criteria x 4 routes grid, rubric and score sheet.
 
-## How this maps to the scenarios already in `PLAN.md`
+## The five head-to-head scenarios, mapped to the criteria
 
-| Scenario in PLAN.md | Criterion it feeds |
+| Scenario | Criterion it feeds |
 |---|---|
 | 1. Ease of changing a metric | Adding a metric |
 | 2. SQL output and number verification | Accuracy, Auditability |
@@ -70,7 +70,7 @@ Each is judged from **five seats**: data engineer, modeler, Claude admin, techni
 | 4. Who can set up and maintain it | Setup and upkeep |
 | 5. Consistency across clients | Consistency |
 
-**Gaps in our scenarios vs these criteria:** Security (the restricted-user test), Ease of use for a non-technical user, and **Route A (Claude + warehouse)** are not covered. Plan 1 so far compares Routes B and C only; the North Star needs Route A as the baseline.
+**Coverage update (2026-10-20):** Route A (Claude on its own) and the security test have now been run (see [findings.md](findings.md)). Still not covered: the non-technical-user ease-of-use test, the Omni restricted-user security test, and the Omni business-user metric-change flow.
 
 ## Open questions for leadership
 

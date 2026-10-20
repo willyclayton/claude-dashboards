@@ -183,4 +183,4 @@ One gotcha it encodes: the semantic layer's `sale_price` applies a `* 0.5` facto
 
 - Cube docs: https://cube.dev/docs
 - Docker Compose docs: https://docs.docker.com/compose/
-- Repo plan and lab notes: `Plan 1/PLAN.md`, `Plan 1/Cube Core + Claude_ hands-on lab.md`
+- Repo plan and lab notes: `docs/plan-1/plan.md`, `docs/reference/cube-core-claude-hands-on-lab.md`

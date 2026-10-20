@@ -1,6 +1,6 @@
 # Plan 1 Findings: gaps, tests and evidence
 
-*Run 2026-10-20. Paper trail for the scoring matrix. Everything here was run, not asserted, unless tagged otherwise. Raw data and scripts are in [`bakeoff/`](bakeoff/).*
+*Run 2026-10-20. Paper trail for the scoring matrix. Everything here was run, not asserted, unless tagged otherwise. Raw data and scripts are in [`bakeoff/`](../../Plan%201/bakeoff).*
 
 ## 1. Headline
 
@@ -31,8 +31,8 @@
 
 ## 3. Method and conditions
 
-- **Questions:** 10 plain-English questions ([`bakeoff/questions.py`](bakeoff/questions.py)): 6 simple counts and rates, 4 that depend on the governed definition of revenue (Q4, Q5, Q6, Q9). The questions do **not** state the rules.
-- **Answer key:** hand-written Snowflake SQL ([`results/answer_key.json`](bakeoff/results/answer_key.json)), computed the same day. The definition is the ported Omni `analytics_prod_ecomm__sales` topic: revenue = `SALE_PRICE * 0.5`, excluding Cancelled and Returned. It matched the Desktop dashboard's totals exactly ($1,319,165.62 for Apr-Sep 2026).
+- **Questions:** 10 plain-English questions ([`bakeoff/questions.py`](../../Plan%201/bakeoff/questions.py)): 6 simple counts and rates, 4 that depend on the governed definition of revenue (Q4, Q5, Q6, Q9). The questions do **not** state the rules.
+- **Answer key:** hand-written Snowflake SQL ([`results/answer_key.json`](../../Plan%201/bakeoff/results/answer_key.json)), computed the same day. The definition is the ported Omni `analytics_prod_ecomm__sales` topic: revenue = `SALE_PRICE * 0.5`, excluding Cancelled and Returned. It matched the Desktop dashboard's totals exactly ($1,319,165.62 for Apr-Sep 2026).
 - **Routes and how each was driven:** each question ran 3 times per route through headless Claude Code (`claude -p`, CLI 2.1.303, model `claude-sonnet-5-5`), restricted to one set of tools.
 
 | Route | Tools Claude was allowed |
@@ -44,7 +44,7 @@
 
 - **Scoring:** a run is correct if it matches the key within 0.5% (rows must match label-for-label). Consistency counts a question as consistent when all 3 runs agree with each other, whether or not they are right.
 - **Data:** live Snowflake, so numbers drift: distinct orders were 252,701 on 2026-10-16 and 254,271 on 2026-10-20.
-- **Rate limits:** 7 Omni runs hit HTTP 429 because I ran 6 in parallel. They were re-run one at a time and replaced ([`runs_retry.jsonl`](bakeoff/results/runs_retry.jsonl)); originals are kept in `runs.jsonl`.
+- **Rate limits:** 7 Omni runs hit HTTP 429 because I ran 6 in parallel. They were re-run one at a time and replaced ([`runs_retry.jsonl`](../../Plan%201/bakeoff/results/runs_retry.jsonl)); originals are kept in `runs.jsonl`.
 
 ## 4. Results: accuracy, consistency, cost
 
@@ -99,7 +99,7 @@ Sources for the Omni claims: docs.omni.co/ai/mcp/authentication, docs.omni.co/ai
 
 ## 6. Changing a metric: the persona lens
 
-**Measured (Cube, [`results/change_metric_test.txt`](bakeoff/results/change_metric_test.txt)):** one change to `total_revenue` (exclude Cancelled and Returned) took **1 file, 1 block, 3.4 s** from edit to verified, and **3 of 3** dashboard-style queries changed. Reverted cleanly.
+**Measured (Cube, [`results/change_metric_test.txt`](../../Plan%201/bakeoff/results/change_metric_test.txt)):** one change to `total_revenue` (exclude Cancelled and Returned) took **1 file, 1 block, 3.4 s** from edit to verified, and **3 of 3** dashboard-style queries changed. Reverted cleanly.
 
 That is the data engineer's seat. The question the business asks is who has to be involved:
 
@@ -139,7 +139,7 @@ python3 score.py                                             # accuracy, consist
 ../cube-claude-lab/.venv/bin/python change_metric_test.py    # metric change timing
 ```
 
-Files: `bakeoff/questions.py`, `answer_key.py`, `run_bakeoff.py`, `score.py`, `security_test.py`, `security_prod_test.py`, `change_metric_test.py`; results in `bakeoff/results/` (`runs.jsonl`, `runs_retry.jsonl`, `scores.json`, `answer_key.json`, `security_test.txt`, `security_prod_test.txt`, `change_metric_test.txt`).
+Files (all in `Plan 1/bakeoff/`): `questions.py`, `answer_key.py`, `run_bakeoff.py`, `score.py`, `security_test.py`, `security_prod_test.py`, `change_metric_test.py`; results in `bakeoff/results/` (`runs.jsonl`, `runs_retry.jsonl`, `scores.json`, `answer_key.json`, `security_test.txt`, `security_prod_test.txt`, `change_metric_test.txt`).
 
 ## 10. Questions for the data team
 
