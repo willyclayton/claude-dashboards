@@ -1,0 +1,9 @@
+yaml-create: {'fileName': 'analytics_prod_ecomm__sales.topic', 'success': True}
+seconds to validate: 1.5
+validation errors: [{"message": "Field \"sale_price_renamed\" not found in view \"analytics_prod_ecomm__sales__order_items\"", "is_warning": false, "yaml_path": "analytics_prod_ecomm__sales.topic,views,analytics_prod_ecomm__sales__order_items,measures,broken_metric", "auto_fix": {"description_short": "Remove measure \"analytics_prod_ecomm__sales__order_items.broken_metric\" from view in topic \"analytics_prod_ecomm__sales\"", "description_unique": "Remove measure \"analytics_prod_ecomm__sales__order_items.broken_metric\" from view in topic \"analytics_prod_ecomm__sales\""}, "slug": "referenced_field_not_found", 
+querying the broken metric: {"jobs_submitted":{"ed2e6d00-7470-48f2-8c6e-544ffd15c4a5":"708b1b65-8b39-4e2a-ae92-0dd0f6d057a7"}}
+{"job_id":"ed2e6d00-7470-48f2-8c6e-544ffd15c4a5","status":"FAILED","client_result_id":"708b1b65-8b39-4e2a-ae92-0dd0f6d057a7","error_type":"PLAN","error_message":"Referenced field \"analytics_prod_ecomm
+main still healthy: True
+delete branch: {
+  "success": true
+}

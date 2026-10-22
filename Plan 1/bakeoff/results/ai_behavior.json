@@ -1,0 +1,38 @@
+{
+ "cube/out_of_scope": {
+  "result": "I can't answer this from the Cube tools. The only data they expose is e-commerce sales, covering orders, revenue, returns, shipping and customer demographics. It has no NPS, survey or satisfaction-score measure, and I won't invent a definition.\n\nReturn rate and time-to-ship exist, but they're only loose proxies for satisfaction. Say if you'd like either one for last quarter, or point me to another source for NPS.",
+  "cost": 0.0939248
+ },
+ "cube/ambiguous": {
+  "result": "**Monthly sales, Apr\u2013Sep 2026** (net of cancelled and returned orders):\n\n| Month | Net revenue | Orders |\n|---|---|---|\n| Apr | $206.7K | 9,081 |\n| May | $210.9K | 9,179 |\n| Jun | $203.2K | 9,085 |\n| Jul | $217.5K | 9,702 |\n| Aug | $239.6K | 10,432 |\n| Sep | $241.4K | 10,733 |\n\nNet revenue grew about 17% from April to September. Average sale price stayed flat at roughly $23, so order volume drove the growth.\n\nThe query's SQL multiplies `SALE_PRICE` by 0.5. I don't know why, so check that factor if these figures look low.",
+  "cost": 0.1060408
+ },
+ "cube/relative_time": {
+  "result": "Last quarter (Q3 2026, 2026-07-01 to 2026-09-30) net revenue was **$698,416.89**. That figure excludes cancelled and returned orders, as the metric guidance says to do.\n\nGross revenue, which includes those orders, was $732,109.31.",
+  "cost": 0.10171010000000001
+ },
+ "omni/out_of_scope": {
+  "result": "I couldn't get last quarter's (Q3 2026) customer NPS. The `analytics_prod_ecomm__sales` topic has no NPS data. Omni also searched the wider database and found no survey, feedback, or satisfaction data.\n\nTo calculate NPS, it would need customer survey ratings (0\u201310) with response dates. If that data lives in another source, point me to it.\n\nOmni chat: https://willyc.omniapp.co/chat/29c5ff25-dd5b-4519-8cdf-b31d8470afb8",
+  "cost": 0.1747197
+ },
+ "omni/ambiguous": {
+  "result": "**Sales overview** (all dates, excluding cancelled and returned orders):\n\n| Metric | Total |\n|---|---:|\n| Sales revenue | 5,770,667.28 |\n| Orders | 243,526 |\n| Items sold | 249,824 |\n| Customers | 126,089 |\n\n[Open in Omni](https://willyc.omniapp.co/chat/8b2714e8-a5e2-4245-8325-337faf506d20)",
+  "cost": 0.15746809999999997
+ },
+ "omni/relative_time": {
+  "result": "Revenue last quarter (Q3 2026) was **$698,416.89**. That excludes cancelled and returned orders.\n\nDate range used: July 1, 2026 through September 30, 2026 (UTC). The query treated October 1 as an exclusive end date.",
+  "cost": 0.15692480000000003
+ },
+ "claude_alone/out_of_scope": {
+  "result": "I can't give you last quarter's NPS because ANALYTICS_PROD.ECOMM doesn't contain any NPS or survey data. I searched every table and column in the schema. It holds orders, order items, products, inventory, users, events, sessions and distribution centers. None of them has a survey, rating or score field.\n\nNPS is probably in a survey tool such as Delighted, Qualtrics or Medallia, or in a different schema. If you tell me where it lives, I'll query it. I'd rather not use returns or repeat purchases as a stand-in, because they measure something different.",
+  "cost": 0.1404839
+ },
+ "claude_alone/ambiguous": {
+  "result": "**Monthly sales (ANALYTICS_PROD.ECOMM.MONTHLY_SALES_OVERVIEW)**\n\nCompleted sales:\n- Jun 2026: $406K\n- Jul 2026: $435K\n- Aug 2026: $479K\n- Sep 2026: $483K\n- Oct 2026 (month to date): $212K\n\nCancelled orders stay around $15\u201319K a month.\n\nOctober also has $85K shipped and $50K processing that haven't completed yet.\n\nI took the MoM figures as given and didn't check them. They look inconsistent, for example \u22120.04 for June against 26.5 for September.",
+  "cost": 0.13208409999999998
+ },
+ "claude_alone/relative_time": {
+  "result": "Revenue last quarter (Q3 2026) was **about $1.40M**. That is the sale price of Complete order items, $1,396,834.\n\n- **Dates:** 2026-07-01 to 2026-09-30, filtered on `ORDER_ITEMS.created_at`.\n- **Excluded:** Cancelled items ($52.4K) and Returned items ($15.0K).\n- **Gross total:** Including those two statuses, the total is about $1.46M.",
+  "cost": 0.1596961
+ }
+}

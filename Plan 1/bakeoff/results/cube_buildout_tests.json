@@ -1,0 +1,96 @@
+{
+ "E1_new_metric_returned_revenue": {
+  "seconds_edit_to_queryable": 0.8,
+  "value": 55459.095192075,
+  "expected_via_status_filter": 55459.095192075,
+  "match": true
+ },
+ "E2_net_revenue_rule_in_measure": {
+  "seconds_edit_to_queryable": 2.3,
+  "net_revenue_apr_sep": 1319165.61982197,
+  "answer_key_Q4": 1319165.6198219657
+ },
+ "E3_rolling_30d_revenue": {
+  "seconds_edit_to_queryable": 1.6,
+  "rows": [
+   [
+    "2026-09-25",
+    246262.77
+   ],
+   [
+    "2026-09-26",
+    248531.51
+   ],
+   [
+    "2026-09-27",
+    252757.57
+   ],
+   [
+    "2026-09-28",
+    252666.96
+   ],
+   [
+    "2026-09-29",
+    252453.57
+   ],
+   [
+    "2026-09-30",
+    253023.89
+   ]
+  ]
+ },
+ "E4_segment_complete_only": {
+  "seconds_edit_to_queryable": 2.6,
+  "segment_revenue": 5702974.52085897,
+  "total_revenue_completed": 5702974.52085897
+ },
+ "E5_access_policy_dev_mode": {
+  "country=UK": {
+   "UK": 1048758.39
+  },
+  "no country claim": {},
+  "country=USA": {
+   "USA": 4989167.9
+  }
+ },
+ "E5b_access_policy_production_mode (security_prod_access_policy_test.txt)": {
+  "no token": "HTTP 403",
+  "forged token": "HTTP 403",
+  "country=UK": {
+   "UK": 1048758.39
+  },
+  "no country claim": {}
+ },
+ "E6_broken_column": {
+  "meta_endpoint_ok": true,
+  "other_metrics_still_work": true,
+  "broken_query_error": "Snowflake: invalid identifier '\"order_items\".SALE_PRICE_RENAMED' (raw warehouse error)",
+  "seconds_to_see_error": 1.9,
+  "model_rejected_at_load": false
+ },
+ "E7_pre_aggregation": {
+  "seconds_until_preagg_used": 1.4,
+  "used": [
+   "dev_pre_aggregations.order_items_rev_by_day_status"
+  ],
+  "repeat_query_s": [
+   0.025,
+   0.011,
+   0.009
+  ]
+ },
+ "mcp_identity": {
+  "unscoped_stdio": {
+   "USA": 4766188.15,
+   "UK": 1004479.13
+  },
+  "uk_scoped_stdio": {
+   "UK": 1004479.13
+  },
+  "uk_scoped_remote_http": {
+   "UK": 1004479.13
+  },
+  "http_endpoint_unauthenticated_initialize": "HTTP 200"
+ },
+ "note": "E1-E4 additions are now permanent in model/cubes/order_items.yml, so cube_buildout_tests.py E1-E4 would collide on names; run it against a clean checkout of the earlier model to reproduce."
+}

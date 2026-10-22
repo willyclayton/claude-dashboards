@@ -27,8 +27,13 @@ mcp = FastMCP(
 )
 
 
+# Per-user identity: claims from CUBE_SECURITY_CONTEXT (JSON, e.g. {"country": "UK"}) go into every token,
+# so Cube's access policy or queryRewrite sees who is asking. Without it every caller is unrestricted.
+SECURITY_CONTEXT = json.loads(os.environ.get("CUBE_SECURITY_CONTEXT", "{}"))
+
+
 def _headers():
-    token = jwt.encode({"exp": int(time.time()) + 600}, API_SECRET, algorithm="HS256")
+    token = jwt.encode({"exp": int(time.time()) + 600, **SECURITY_CONTEXT}, API_SECRET, algorithm="HS256")
     return {"Authorization": token}
 
 

@@ -116,7 +116,39 @@ cubes:
         meta:
           synonyms: [days to ship, fulfillment time, lead time, processing days, shipping time]
 
+    segments:
+      - name: complete_only
+        sql: "{CUBE}.STATUS = 'Complete'"
+
     measures:
+      # Added beyond the Omni port (see docs/plan-1/findings.md section 12)
+      - name: net_revenue
+        sql: "{sale_price}"
+        type: sum
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled','Returned')"
+        description: "Revenue excluding Cancelled and Returned orders. Use this instead of total_revenue when the exclusion rule should be enforced, not just advised."
+        meta:
+          synonyms: [net sales, revenue excluding returns, revenue after cancellations]
+
+      - name: returned_revenue
+        sql: "{sale_price}"
+        type: sum
+        filters:
+          - sql: "{CUBE}.STATUS = 'Returned'"
+        description: "Revenue on items that were returned."
+        meta:
+          synonyms: [refunded revenue, returns value]
+
+      - name: rolling_30d_revenue
+        sql: "{sale_price}"
+        type: sum
+        rolling_window:
+          trailing: 30 day
+        description: "Revenue over the trailing 30 days. Query with a day granularity on created_at."
+        meta:
+          synonyms: [trailing 30 day revenue, last 30 days revenue]
+
       - name: total_items_sold
         sql: ID
         type: count

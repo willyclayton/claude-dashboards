@@ -105,3 +105,49 @@ Tags: **Tested** = we ran it (see [Findings.md](findings.md)). **Documented** = 
 - Bake-off at 25-50 questions (10 run); two independent scorers; a messier dataset.
 - Route 2 beyond Cube Core (Snowflake semantic views, MetricFlow).
 - Non-technical-user task test for ease of use.
+
+## 6. Weighted score (proposed weights; live version in the spreadsheet)
+
+The **Weighted Score** sheet in [success-criteria-grid.xlsx](success-criteria-grid.xlsx) recalculates all of this from editable weights, scores and two switches. **The weights are my proposal, not leadership's**: the success criteria say leadership sets them. Default weights: Setup 5, Adding a metric 20, Total cost 10, Accuracy 20, Consistency 10, Auditability 10, Security 15, Ease of use 10.
+
+**How it is computed:** each score is 0-3. Headline = weighted points earned / weighted points possible, **on the criteria that have a score**. An unscored criterion is never counted as zero in the headline; instead the sheet shows coverage, a floor (unscored = 0) and a ceiling (unscored = 3).
+
+**Default settings** (Omni MCP unguided, route 4 uses route 3's runs as a proxy):
+
+| | 1. Claude alone | 2. Cube | 3. Claude + Omni | 4. Omni (+ Claude) |
+|---|---|---|---|---|
+| **Headline weighted score** | **31.5%** | **50.0%** | **62.2%** | **68.9%** |
+| Coverage (share of weight scored) | 90% | 90% | 75% | 75% |
+| Floor / ceiling | 28.3% / 38.3% | 45.0% / 55.0% | 46.7% / 71.7% | 51.7% / 76.7% |
+| Unweighted (equal weights) | 42.9% | 47.6% | 66.7% | 77.8% |
+| Security gate | FAIL (Tested) | FAIL as configured (Tested) | Untested (docs: PASS) | Untested (docs: PASS) |
+
+Total cost is unscored everywhere, so it is excluded from every headline number. Security is untested for Omni, which is why routes 3 and 4 have 75% coverage.
+
+### Does the ranking depend on the weights?
+
+
+**Omni MCP topic: Unguided**
+
+| Weight set | 1 Claude alone | 2 Cube | 3 Claude + Omni | 4 Omni (+Claude) | Ranking |
+|---|---|---|---|---|---|
+| Proposed (default) | 31.5% | 50.0% | 62.2% | 68.9% | 4 > 3 > 2 > 1 |
+| Equal weights | 42.9% | 47.6% | 66.7% | 77.8% | 4 > 3 > 2 > 1 |
+| Trust-heavy (accuracy + consistency 55%) | 43.3% | 65.0% | 45.1% | 51.0% | 2 > 4 > 3 > 1 |
+| Persona-heavy (metric change, ease, audit 65%) | 23.3% | 38.3% | 78.4% | 86.3% | 4 > 3 > 2 > 1 |
+
+**Omni MCP topic: Pinned**
+
+| Weight set | 1 Claude alone | 2 Cube | 3 Claude + Omni | 4 Omni (+Claude) | Ranking |
+|---|---|---|---|---|---|
+| Proposed (default) | 31.5% | 50.0% | 80.0% | 86.7% | 4 > 3 > 2 > 1 |
+| Equal weights | 42.9% | 47.6% | 77.8% | 88.9% | 4 > 3 > 2 > 1 |
+| Trust-heavy (accuracy + consistency 55%) | 43.3% | 65.0% | 72.5% | 78.4% | 4 > 3 > 2 > 1 |
+| Persona-heavy (metric change, ease, audit 65%) | 23.3% | 38.3% | 86.3% | 94.1% | 4 > 3 > 2 > 1 |
+
+**Reading it:**
+- **Omni leads in most settings** and by a wide margin when the weighting favors who can change a metric, auditability and ease of use.
+- **It is not unconditional.** With the topic unguided and 55% of the weight on accuracy and consistency, Cube wins (65.0% against 51.0% for Omni). Fix the topic overlap (pin or scope the Omni topic, section 11.7 of the findings) and Omni leads under every weighting tried.
+- **Claude on its own is last in every setting.**
+- **Not reliable yet:** one scorer; Omni's security and business-user paths unverified; route 4's accuracy and consistency are a proxy; no cost data.
+

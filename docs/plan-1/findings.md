@@ -233,3 +233,47 @@ Omni's docs say a query can run as another user only with an **Organization API 
 | Omni restricted-user security | needs an Organization API key and a test user |
 | Omni in-app chat (route 4) accuracy, consistency, cost | not driven; MCP used as proxy |
 | Omni platform licence cost | not public |
+
+## 12. Round 3 (2026-10-22): building the Cube layer out end to end, and breaking it
+
+Goal: run Cube as a stand-in for a BI semantic layer, add what a real build needs, and record every gap. The walkthrough is in [cube-demo-guide.md](cube-demo-guide.md) and the extra criteria in [additional-criteria.md](additional-criteria.md). Scripts: [`cube_buildout_tests.py`](../../Plan%201/bakeoff/cube_buildout_tests.py), [`omni_broken_field_test.py`](../../Plan%201/bakeoff/omni_broken_field_test.py), [`ai_behavior_test.py`](../../Plan%201/bakeoff/ai_behavior_test.py). Raw output in `Plan 1/bakeoff/results/` (`cube_buildout_tests.json`, `omni_broken_field_test.txt`, `ai_behavior.json`, `security_prod_access_policy_test.txt`).
+
+### 12.1 What we added to the Cube model (Tested)
+
+| Addition | Edit to queryable | Check |
+|---|---|---|
+| `returned_revenue` (new metric) | 0.8 s | 55,459.10, equals the status-filter query exactly |
+| `net_revenue` (exclusion rule inside the measure) | 2.3 s | $1,319,165.62 for Apr-Sep, equals the answer key to the cent |
+| `rolling_30d_revenue` | 1.6 s | six daily values returned |
+| `complete_only` segment | 2.6 s | equals `total_revenue_completed` (5,702,974.52) |
+| Pre-aggregation (revenue by day and status) | 1.4 s until used | repeat queries 9-25 ms; Cube Store ships in the image. Not kept in the model |
+
+The four metrics and the segment are kept in `model/cubes/order_items.yml`; the 6 golden tests still pass. `net_revenue` closes finding 5 (the exclusion rule was advisory text): it is now enforceable inside a measure.
+
+### 12.2 Security: the right pattern, and the MCP gap (Tested)
+
+- **Native `access_policy` fails closed.** In production mode, no token and a forged token get 403; a `country=UK` token sees UK only; a token with no country claim sees **nothing** (empty). `queryRewrite` (what we had) returns **everything** for a missing claim. In Cube 1.8.8 the policy needs `group: "*"` (`role` is rejected).
+- **The MCP wrapper had no identity.** We added `CUBE_SECURITY_CONTEXT`: Claude through a UK-scoped wrapper returned only UK ($1,004,479.13) and flagged the filter it had not asked for. Unscoped, it returned USA ($4,766,188.15) and UK.
+- **Remote transport works, with no auth.** The wrapper runs as a Streamable HTTP MCP and Claude connected by URL with the UK identity applied. An unauthenticated `initialize` request got HTTP 200. Identity is per server process, not per caller. We kept it on localhost.
+
+### 12.3 What happens when a definition breaks (Tested on both)
+
+| | Cube | Omni |
+|---|---|---|
+| Measure points at a missing column or field | Model loads; `/meta` fine; other metrics fine; the broken metric fails at query time with a raw Snowflake error ("invalid identifier"), 1.9 s | `validate` returned a not-found error with the YAML path and an auto-fix suggestion in 1.5 s; a query on the branch failed at the planning stage; main stayed healthy |
+
+The two tests are not identical (a missing warehouse column in Cube, a missing model field in Omni). Both show when you find out. Omni's branch was deleted and nothing was merged.
+
+### 12.4 AI behavior across routes (Tested, 1 run each)
+
+| Question | Cube | Omni (Sales topic) | Claude alone |
+|---|---|---|---|
+| "Customer NPS last quarter?" (not in data) | Refused; "won't invent a definition"; offered proxies | Refused; searched wider, found nothing | Refused after searching every table |
+| "Show me sales." (ambiguous) | Monthly net revenue table | All-time overview | Used an undocumented `MONTHLY_SALES_OVERVIEW` table |
+| "Revenue last quarter?" (today 2026-10-22) | **$698,416.89** | **$698,416.89** | About **$1.40M** (raw price, Complete only) |
+
+No route asked a clarifying question. One run per cell, so treat as illustration, not a rate.
+
+### 12.5 Still untested from the 40 criteria
+
+Time zones, fiscal calendars, semi-additive metrics, column masking, SSO, hostile prompts, multi-turn follow-ups, the SQL API, drill-down, scheduling, embedding and dashboard collaboration. See [additional-criteria.md](additional-criteria.md).

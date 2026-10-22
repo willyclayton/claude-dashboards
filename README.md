@@ -25,11 +25,13 @@
 |---|---|
 | **Read the test results and evidence** | [docs/plan-1/findings.md](docs/plan-1/findings.md) |
 | See the scoring matrix (8 criteria x 4 routes) | [docs/plan-1/scoring-matrix.md](docs/plan-1/scoring-matrix.md) |
-| Open the filled-in success criteria grid (spreadsheet) | [docs/plan-1/success-criteria-grid.xlsx](docs/plan-1/success-criteria-grid.xlsx) |
+| Open the filled-in grid and the **weighted score** (spreadsheet, editable weights) | [docs/plan-1/success-criteria-grid.xlsx](docs/plan-1/success-criteria-grid.xlsx) |
 | See the success criteria and North Star | [docs/plan-1/success-criteria.md](docs/plan-1/success-criteria.md) |
 | Read the Plan 1 plan, progress and risks | [docs/plan-1/plan.md](docs/plan-1/plan.md) |
 | See every task and its status | [docs/project-tracker.csv](docs/project-tracker.csv) |
 | Read what we learned and the gotchas | [docs/learnings.md](docs/learnings.md) |
+| Run the Cube demo (build steps, 4 pitfalls, 30-min run-of-show, gap register) | [docs/plan-1/cube-demo-guide.md](docs/plan-1/cube-demo-guide.md) |
+| See 40 more criteria with test status | [docs/plan-1/additional-criteria.md](docs/plan-1/additional-criteria.md) |
 | Compare every Omni attribute with Cube | [docs/reference/omni-vs-cube-attributes.md](docs/reference/omni-vs-cube-attributes.md) |
 | Learn Docker and Cube basics | [docs/reference/docker-and-cube-101.md](docs/reference/docker-and-cube-101.md) |
 | Read the original Cube lab guide | [docs/reference/cube-core-claude-hands-on-lab.md](docs/reference/cube-core-claude-hands-on-lab.md) |

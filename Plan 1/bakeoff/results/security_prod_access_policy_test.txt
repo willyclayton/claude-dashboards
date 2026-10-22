@@ -1,0 +1,4 @@
+no token                         -> HTTP 403: {"error":"Authorization header isn't set"}
+forged token (wrong secret)      -> HTTP 403: {"error":"Invalid token"}
+valid token, country=UK          -> {'UK': 1048758.39}
+valid token, no country claim    -> {}

@@ -56,6 +56,16 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - **Snowflake query history shows other users' queries** for this role, so per-route attribution works by user and query shape, not by time (routes ran concurrently).
 - **The omni CLI is a safe test rig:** create a branch, `yaml-create`, `validate`, `query run --body` with `branchId`, then `delete-branch`. Query results come back as base64 Arrow (needs pyarrow to read).
 
+## Round 3 lessons (2026-10-22; findings section 12)
+
+- **Native `access_policy` beats `queryRewrite`:** it fails closed on a missing claim. In Cube 1.8.8 use `group: "*"`; `role` is rejected.
+- **Dev mode is not a security posture.** Production mode also needs `CUBEJS_CACHE_AND_QUEUE_DRIVER=memory` (or Cube Store) to run queries.
+- **Cube won't tell you a definition is broken until someone queries it;** Omni's `validate` does, in about 1.5 s with an auto-fix. Build CI if you self-host.
+- **An MCP wrapper is an identity boundary.** One process, one identity, and our HTTP version had no auth. Plan OAuth before sharing anything.
+- **When data is ambiguous, Claude alone finds shadow tables** (`MONTHLY_SALES_OVERVIEW`). Governed routes pick a defined view.
+- **`claude -p ... | python` printed nothing;** redirect stdout to a file, then parse it.
+- **Don't name a test metric after an existing one:** `revenue_per_customer` already existed from the Omni port and caused a duplicate-name error.
+
 ## Context gap: Cube vs Omni
 
 Full, verified attribute-by-attribute table: [omni-vs-cube-attributes.md](reference/omni-vs-cube-attributes.md). In short: Cube matches Omni on structure (SQL, joins, descriptions, access, caching) and exceeds it on performance. The gap is the AI-facing layer: `synonyms`, `all_values`, `sample_values`, `sample_queries`, `ai_fields` and `ai_chat_topics` have no real Cube equivalent. Cube's docs name `meta.ai_context` for AI agents, but Core's API doesn't act on it, so our MCP wrapper reads `meta` itself. The "exclude cancelled and returned" rule is advisory text in both tools unless built into the measure (view `default_filters` or a measure `filters` block does that in Cube; tested).
