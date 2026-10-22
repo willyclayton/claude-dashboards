@@ -1,0 +1,7 @@
+created: {"dashboard": {"id": "e1f772fd-a60f-4cd7-90c0-f1ca38479bb4", "createdAt": "2026-10-22T19:34:57.364Z", "updatedAt": "2026-10-22T19:34:57.364Z", "metadata": {"layouts": {"lg": []}, "textTiles": [], "con
+documents using the field on main: ['ZZ claude validator test (safe to delete)']
+documents the validator evaluated on the branch: [('Orders Dashboard', 4), ('ZZ claude validator test (safe to delete)', 0)]
+seconds from rename to impact report: 1.5
+BROKEN: {"name": "Orders Dashboard", "identifier": "efc7c299", "type": "published"} | issues: {"dashboard_filter_issues": [], "dashboard_last_visited": null, "dashboard_visits": null, "delivery_filter_issues": [], "document_id": "0dcd152a-ec8a-46f1-8ea3-f3d3cbc8f718", "folder": null, "owner": {"email": "will.clayton@omni.co", "name": "Will Clayton"}, "queries_and_issues": [{"issues": ["No such view \"oi\""], "query_id_map_key": "1", "query_name": "kpis", "query_presentation_id": "955f5914-986a-452e-a752-9d1ae1f61e06"}, {"issues": ["No such view \"oi\""], "query_id_map_key": "2", "query_n
+delete branch: {   "success": true }
+delete scratch dashboard: {   "success": true }

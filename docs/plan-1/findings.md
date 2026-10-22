@@ -277,3 +277,19 @@ No route asked a clarifying question. One run per cell, so treat as illustration
 ### 12.5 Still untested from the 40 criteria
 
 Time zones, fiscal calendars, semi-additive metrics, column masking, SSO, hostile prompts, multi-turn follow-ups, the SQL API, drill-down, scheduling, embedding and dashboard collaboration. See [additional-criteria.md](additional-criteria.md).
+
+## 13. Round 4 (2026-10-22): the path-based devil's-advocate tests
+
+Walkthrough: [cube-vs-omni-demo-paths.md](cube-vs-omni-demo-paths.md). Scripts and raw output in `Plan 1/bakeoff/` (`path2_tickets_cube.py`, `omni_path2_aov.py`, `roles_test.py`, `omni_content_validator_test.py`, `path5_revenue_ambiguity_test.py`).
+
+| Test | Result |
+|---|---|
+| Change request T1 (AOV), Claude Code as the engineer | 36.5 s, $0.24; after: $23.70, equals SQL ($698,416.89 / 29,465). Before: Claude composed AOV by hand ($23.72, and a mixed-basis $22.63) |
+| Change request T2 (repeat-customer rate) | 34.3 s, $0.21; before: refused; after: 54.5% (14,711 of 27,005), equals SQL (54.475%). Solution is a correlated subquery dimension |
+| Same AOV request on Omni (CLI, branch) | Omni's agent was already right before the change ($23.70); edit + validate 1.5 s; re-ask on branch 14.8 s |
+| Roles (viewer, analyst, admin) in Cube production mode | Works, but needs `contextToGroups` in `cube.js` (which receives `{securityContext}`); viewer: own country only, no margin, no email; no group claim hides everything; errors are HTTP 500 "hidden member" |
+| Cube "branch": git worktree + second container + `CUBE_API_URL` | Ready in 5 s; Claude on the branch sees the branch-only metric ($42,586.17); on main it improvises with a filter and lands on the same number |
+| Omni Content Validator | Found the scratch dashboard using the field on main; **reported no issue on a branch after the measure was removed from the topic** (inconclusive; unexplained) |
+| "Revenue last quarter" x3 | Cube $698,416.89 x3; Omni $698,416.89 x2 and $1,396,833.78 x1 (agent used the other topic despite the prompt naming the Sales topic) |
+
+Not tested: a human doing the change by hand (the 5-15 minute estimate), the Omni UI path, an Omni topic-scoped MCP, a hosted authenticated Cube MCP, and the validator on a case that should clearly break.

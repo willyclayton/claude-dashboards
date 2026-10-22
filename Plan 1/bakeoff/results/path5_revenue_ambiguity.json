@@ -1,0 +1,32 @@
+[
+ [
+  "cube",
+  1,
+  "Last quarter's net revenue (Q3 2026, 2026-07-01 to 2026-09-30, by order date) was **$698,416.89**. I used `sales.net_revenue`, which excludes cancelled and returned orders. The generated SQL multiplies sale price by 0.5, which the measure's description doesn't mention, so check that with the metric owner."
+ ],
+ [
+  "omni",
+  1,
+  "Last quarter (Q3 2026) revenue was **698,416.89**, excluding cancelled and returned orders. The dates were July 1\u2013September 30, 2026. The measure was `order_items.total_revenue`, the sum of `sale_price`, filtered on `created_at`."
+ ],
+ [
+  "cube",
+  2,
+  "Last quarter (Q3, 2026-07-01 to 2026-09-30) net revenue was **$698,416.89**, using `sales.net_revenue`, which excludes cancelled and returned orders. The generated SQL multiplies sale price by 0.5, and the measure's description doesn't mention that factor, so check it before you rely on the number."
+ ],
+ [
+  "omni",
+  2,
+  "Last quarter (Q3 2026) revenue was **$698,416.89**. The dates were July 1 to September 30, 2026, by `created_at`. The measure was `order_items.total_revenue`, which sums `sale_price`. It excludes Cancelled and Returned orders."
+ ],
+ [
+  "cube",
+  3,
+  "Last quarter's (Q3 2026) net revenue was **$698,416.89**, for orders created 2026-07-01 to 2026-09-30. The measure was `sales.net_revenue`, which excludes cancelled and returned orders. Its generated SQL multiplies sale price by 0.5, which looks odd, so check the definition."
+ ],
+ [
+  "omni",
+  3,
+  "Q3 2026 revenue was **1,396,833.78**. The period was July 1 to September 30, 2026, by order creation date in UTC. The measure was Order Items `total_sale_price`, summed over Complete, Shipped and Processing orders. Cancelled and returned orders were excluded."
+ ]
+]

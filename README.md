@@ -30,6 +30,8 @@
 | Read the Plan 1 plan, progress and risks | [docs/plan-1/plan.md](docs/plan-1/plan.md) |
 | See every task and its status | [docs/project-tracker.csv](docs/project-tracker.csv) |
 | Read what we learned and the gotchas | [docs/learnings.md](docs/learnings.md) |
+| **Read the Omni vs Claude + Cube write-up (end to end)** | [docs/plan-1/omni-vs-claude-cube.md](docs/plan-1/omni-vs-claude-cube.md) |
+| **Run the devil's-advocate demo by path (end user, data engineer, admin, change impact, consistency)** | [docs/plan-1/cube-vs-omni-demo-paths.md](docs/plan-1/cube-vs-omni-demo-paths.md) |
 | Run the Cube demo (build steps, 4 pitfalls, 30-min run-of-show, gap register) | [docs/plan-1/cube-demo-guide.md](docs/plan-1/cube-demo-guide.md) |
 | See 40 more criteria with test status | [docs/plan-1/additional-criteria.md](docs/plan-1/additional-criteria.md) |
 | Compare every Omni attribute with Cube | [docs/reference/omni-vs-cube-attributes.md](docs/reference/omni-vs-cube-attributes.md) |

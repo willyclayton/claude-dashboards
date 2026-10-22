@@ -1,0 +1,15 @@
+admin (UK)           revenue by country -> {'sales.users_country': 'UK', 'sales.total_revenue': 1048758.39}
+                     avg_margin         -> {'sales.avg_margin': 24.07}
+                     customer email     -> {'sales.users_email': 'jtaylor@gmail.com', 'sales.total_orders': 23.0}
+analyst (UK)         revenue by country -> {'sales.users_country': 'UK', 'sales.total_revenue': 1048758.39}
+                     avg_margin         -> {'sales.avg_margin': 24.07}
+                     customer email     -> {'sales.users_email': 'jtaylor@gmail.com', 'sales.total_orders': 23.0}
+viewer (UK)          revenue by country -> {'sales.users_country': 'UK', 'sales.total_revenue': 1048758.39}
+                     avg_margin         -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.avg_margin'. Please make it visible using `public: true`.
+                     customer email     -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.users_email'. Please make it visible using `pub
+viewer, no country   revenue by country -> {}
+                     avg_margin         -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.avg_margin'. Please make it visible using `public: true`.
+                     customer email     -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.users_email'. Please make it visible using `pub
+no group claim       revenue by country -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.total_revenue'. Please make it visible using `public: tru
+                     avg_margin         -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.avg_margin'. Please make it visible using `public: true`.
+                     customer email     -> HTTP 500: {"error":"Error: You requested hidden member: 'sales.total_orders'. Please make it visible using `pu

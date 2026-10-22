@@ -66,6 +66,15 @@ Running log of what we learned building the Claude + Cube + Claude Dashboards se
 - **`claude -p ... | python` printed nothing;** redirect stdout to a file, then parse it.
 - **Don't name a test metric after an existing one:** `revenue_per_customer` already existed from the Omni port and caused a duplicate-name error.
 
+## Round 4 lessons (2026-10-22; findings section 13)
+
+- **Named groups in Cube need `contextToGroups` in `cube.js`**, and it receives `{ securityContext }`, not the context itself. Get that wrong and every member is hidden for everyone (as an HTTP 500).
+- **A Cube "branch" is a git worktree plus a second container** on another port, with Claude pointed at it through `CUBE_API_URL`. 5 s to stand up.
+- **Omni's agent is still an LLM:** across three identical runs it used a different topic once and returned a number double the right one, even with the topic named in the prompt. "Deterministic SQL" is not "deterministic answers".
+- **Omni's agent composed AOV correctly before any fix; Claude + Cube composed it by hand and was off.** The governed-layer advantage shows up after you add the measure.
+- **The Omni Content Validator gave no issues for a removed measure on a branch** in our test. Don't demo it as proven until checked with Omni.
+- **Headless Claude Code can edit but couldn't run its own verification** (shell approvals); a human must check numbers against SQL.
+
 ## Context gap: Cube vs Omni
 
 Full, verified attribute-by-attribute table: [omni-vs-cube-attributes.md](reference/omni-vs-cube-attributes.md). In short: Cube matches Omni on structure (SQL, joins, descriptions, access, caching) and exceeds it on performance. The gap is the AI-facing layer: `synonyms`, `all_values`, `sample_values`, `sample_queries`, `ai_fields` and `ai_chat_topics` have no real Cube equivalent. Cube's docs name `meta.ai_context` for AI agents, but Core's API doesn't act on it, so our MCP wrapper reads `meta` itself. The "exclude cancelled and returned" rule is advisory text in both tools unless built into the measure (view `default_filters` or a measure `filters` block does that in Cube; tested).

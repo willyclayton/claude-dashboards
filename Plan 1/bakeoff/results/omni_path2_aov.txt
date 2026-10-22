@@ -1,0 +1,5 @@
+BEFORE (main) 20.0s: AOV in **Q3 2026 (July 1–September 30) was $23.70**, excluding cancelled and returned orders.  I used **Total Revenue ÷ Total Orders**: $698,416.89 across 29,465 distinct orders. I did not use **Average Sale Price**, because that measure averages individual items rather than whole orders.
+edit + validate seconds: 1.5 | validation errors: none
+AFTER (branch) 14.8s: AOV in **Q3 2026 (July 1–September 30) was 23.70**.  I used the **Average Order Value** measure from **Order Items**, which calculates net revenue divided by distinct orders, excluding Cancelled and Returned items. The period was filtered by order creation date in UTC.
+total change-to-answer seconds: 16.3
+delete branch: {   "success": true }
