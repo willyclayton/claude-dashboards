@@ -5,11 +5,15 @@ import time
 import httpx
 import jwt
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 CUBE_API_URL = os.environ.get("CUBE_API_URL", "http://localhost:4000/cubejs-api/v1")
 API_SECRET = os.environ["CUBEJS_API_SECRET"]
 MCP_SECRET = os.environ.get("MCP_SECRET", "")  # if set, the endpoint is /<secret>/mcp, an unguessable URL for tunnels
 MCP_PATH = f"/{MCP_SECRET}/mcp" if MCP_SECRET else os.environ.get("MCP_PATH", "/mcp")  # the secret wins over MCP_PATH
+# Host header the library will accept besides localhost, e.g. "abc.trycloudflare.com" (its DNS-rebinding protection
+# otherwise answers a tunnel's public hostname with HTTP 421).
+ALLOWED_HOSTS = ["127.0.0.1:*", "localhost:*"] + [h.strip() for h in os.environ.get("MCP_ALLOWED_HOSTS", "").split(",") if h.strip()]
 MCP_HOST = os.environ.get("MCP_HOST", "127.0.0.1")  # localhost only unless you opt in; a tunnel connects locally
 # Members this server will neither describe nor query (PII and quasi-identifiers). Comma-separated.
 BLOCKED = {m.strip() for m in os.environ.get("CUBE_BLOCKED_MEMBERS", "sales.users_email,sales.users_first_name,sales.users_last_name,sales.users_latitude,sales.users_longitude,sales.users_zip").split(",") if m.strip()}
@@ -28,6 +32,7 @@ mcp = FastMCP(
     host=MCP_HOST,
     port=PORT,
     streamable_http_path=MCP_PATH,
+    transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=True, allowed_hosts=ALLOWED_HOSTS),
 )
 
 

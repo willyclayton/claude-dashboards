@@ -22,6 +22,8 @@ The Cube MCP server worked in Claude Desktop within one session. Making a **dash
 | 10 | The wrapper and the tunnel must both **stay running**; closing the laptop or a crash takes the dashboard down for everyone | No supervisor, no alerting | Yes |
 | 11 | The connector must be added in claude.ai by hand under **exactly the name `cube`**, or every source breaks. On Team or Enterprise it needs an admin (per the Claude Dashboards agent's own message) | Manual, name-sensitive | Yes |
 | 12 | Each **viewer's** query runs on their own connection, so each viewer needs the connector too, while our wrapper has **one shared identity** (no per-user security) | The permission story we already flagged, now blocking sharing | Yes |
+| 13 | Through the tunnel the wrapper answered **HTTP 421** to every request. The MCP library's DNS-rebinding protection only trusts `localhost`, so the tunnel's public hostname was rejected, and Claude reported "failed to connect". Fix: start the tunnel first, then start the wrapper allowing only that hostname (`MCP_ALLOWED_HOSTS`) | One failed end-to-end test and a library lookup; the launch order had to change | Fixed in the script |
+| 14 | Restarting to apply that fix gave the tunnel a **new random address within minutes**, so the first URL we had printed became useless. This is item 9 happening live | Any restart means re-editing the connector | Yes |
 
 ## What it looks like today
 
