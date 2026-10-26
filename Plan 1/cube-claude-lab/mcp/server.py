@@ -8,7 +8,11 @@ from mcp.server.fastmcp import FastMCP
 
 CUBE_API_URL = os.environ.get("CUBE_API_URL", "http://localhost:4000/cubejs-api/v1")
 API_SECRET = os.environ["CUBEJS_API_SECRET"]
-MCP_PATH = os.environ.get("MCP_PATH", "/mcp")
+MCP_SECRET = os.environ.get("MCP_SECRET", "")  # if set, the endpoint is /<secret>/mcp, an unguessable URL for tunnels
+MCP_PATH = f"/{MCP_SECRET}/mcp" if MCP_SECRET else os.environ.get("MCP_PATH", "/mcp")  # the secret wins over MCP_PATH
+MCP_HOST = os.environ.get("MCP_HOST", "127.0.0.1")  # localhost only unless you opt in; a tunnel connects locally
+# Members this server will neither describe nor query (PII and quasi-identifiers). Comma-separated.
+BLOCKED = {m.strip() for m in os.environ.get("CUBE_BLOCKED_MEMBERS", "sales.users_email,sales.users_first_name,sales.users_last_name,sales.users_latitude,sales.users_longitude,sales.users_zip").split(",") if m.strip()}
 PORT = int(os.environ.get("MCP_PORT", "3001"))
 TRANSPORT = os.environ.get("MCP_TRANSPORT", "streamable-http")
 ROW_CAP = 1000
@@ -21,7 +25,7 @@ mcp = FastMCP(
         "names. You cannot run SQL. If a metric is not in describe_data, say you "
         "cannot answer rather than inventing a definition."
     ),
-    host="0.0.0.0",
+    host=MCP_HOST,
     port=PORT,
     streamable_http_path=MCP_PATH,
 )
@@ -70,8 +74,8 @@ def describe_data() -> dict:
             "name": cube["name"],
             "description": cube.get("description"),
             "guidance": (cube.get("meta") or {}).get("ai_context"),
-            "measures": [member(m) for m in cube.get("measures", [])],
-            "dimensions": [member(d) for d in cube.get("dimensions", [])],
+            "measures": [member(m) for m in cube.get("measures", []) if m["name"] not in BLOCKED],
+            "dimensions": [member(d) for d in cube.get("dimensions", []) if d["name"] not in BLOCKED],
         })
     return {"views": out}
 
@@ -92,6 +96,10 @@ def query_data(
                        "dateRange": "last 6 months"}]
     order: {"sales.total_revenue": "desc"}
     """
+    used = set(measures) | set(dimensions or []) | {f.get("member") for f in (filters or [])} \
+        | {t.get("dimension") for t in (time_dimensions or [])} | set(order or {})
+    if used & BLOCKED:
+        raise ValueError(f"Not available through this connector: {sorted(used & BLOCKED)}")
     query = {"measures": measures, "limit": min(limit, ROW_CAP)}
     if dimensions:
         query["dimensions"] = dimensions

@@ -74,3 +74,7 @@ ID,Plan,Workstream,Task,Status,Owner,Date,Evidence / notes,Est hours,Next action
 73,1,Testing,Time a human doing a metric change by hand in Cube and Omni (the 5-15 min estimate),Not started,Will,2026-10-22,Stopwatch table in the paths guide,1,
 74,1,Testing,Scope the Omni MCP to the Sales topic via headers and rerun the 'revenue last quarter' x3 test,Not started,Claude,2026-10-22,Omni returned a wrong number on 1 of 3 runs,0.5,
 75,1,Security,"Build a hosted, authenticated Cube MCP so a dashboard is live for a second user",Not started,Claude,2026-10-22,Path 3 sharing,3,
+76,1,Security,"Harden the MCP wrapper (localhost bind, secret path, PII blocklist)",Done,Claude,2026-10-26,findings 14,0.5,
+77,1,Dashboards,"Add a custom connector named `cube` on claude.ai pointing at a public HTTPS URL, so the Claude Dashboard `kpis` source loads live","Ready, needs Will",Will + Claude,2026-10-26,Run mcp/start_public_tunnel.sh yourself (the agent session blocked starting a public server); then add the connector,1,"Run the script, add connector `cube`, tell Claude"
+78,1,Dashboards,Replace the five saved-file sources with live Cube queries once the connector exists,Not started,Claude,2026-10-26,They hold their requests already,0.5,
+79,1,Docs,Pain log: hosting the Cube MCP for a live Claude Dashboard,Done,Claude,2026-10-26,docs/plan-1/pain-log-hosting-the-cube-mcp.md; scripts in mcp/,0.5,

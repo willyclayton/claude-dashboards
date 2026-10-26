@@ -293,3 +293,21 @@ Walkthrough: [cube-vs-omni-demo-paths.md](cube-vs-omni-demo-paths.md). Scripts a
 | "Revenue last quarter" x3 | Cube $698,416.89 x3; Omni $698,416.89 x2 and $1,396,833.78 x1 (agent used the other topic despite the prompt naming the Sales topic) |
 
 Not tested: a human doing the change by hand (the 5-15 minute estimate), the Omni UI path, an Omni topic-scoped MCP, a hosted authenticated Cube MCP, and the validator on a case that should clearly break.
+
+## 14. Round 5 (2026-10-26): why the Claude Dashboard on Cube wasn't live, and making the wrapper safe to host
+
+**What the dashboard actually holds** (read-only look at "Ecommerce sales: last 6 months", a Claude Dashboard):
+
+- Six data sources. Five (`revenue_by_month`, `revenue_by_status`, `top_categories`, `top_countries`, `orders_ship_by_month`) plus the SQL log are **attached files saved on 2026-10-16**. Each keeps the Cube query it came from (`connector: "cube"`, `tool: "query_data"`) as a request, but the numbers on screen are the Oct 16 snapshot.
+- Only `kpis` is a **live query** (`connector: "cube"`, tool `query_data`), switched on 2026-10-26.
+- A live query is one tool call the reader's page makes on a connector the reader has, under the name the connector was added with. The dashboard type's own instructions say so. A connector that lives only in Claude Desktop's local config is invisible to it. So `kpis` cannot load until a connector literally named `cube` exists on claude.ai, reached over a public HTTPS URL. This is the reason for the earlier "This query isn't refreshing automatically".
+
+**Wrapper hardening** (`mcp/server.py`, Tested locally):
+
+| Change | Test |
+|---|---|
+| Binds `127.0.0.1` by default (it bound `0.0.0.0` before, reachable on the LAN) | LAN address refused |
+| `MCP_SECRET` makes the endpoint `/<secret>/mcp`; the secret wins over `MCP_PATH` (`.env` sets `MCP_PATH`, which silently overrode my first attempt) | plain `/mcp` returned 404, secret path 200 |
+| Blocklist of PII and quasi-identifiers (`CUBE_BLOCKED_MEMBERS`: email, first and last name, latitude, longitude, zip) removed from `describe_data` and rejected in `query_data` | Claude asked for customer emails got "not available"; net revenue still $698,416.89 |
+
+A secret URL is a stopgap, not authentication: anyone who gets the URL can query. Nothing was exposed publicly. A tunnel was not started.
