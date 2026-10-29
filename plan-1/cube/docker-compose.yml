@@ -1,0 +1,8 @@
+services:
+  cube:
+    image: cubejs/cube:latest
+    ports:
+      - "127.0.0.1:4000:4000"   # this Mac only (dev mode has no auth)
+    env_file: .env
+    volumes:
+      - ./model:/cube/conf/model

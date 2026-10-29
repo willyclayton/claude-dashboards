@@ -1,0 +1,32 @@
+views:
+  - name: sales
+    description: Governed sales metrics. Revenue means net revenue (excludes Cancelled and Returned).
+    meta:
+      ai_context: >-
+        Revenue and sales mean net_revenue unless the user says otherwise; if you report gross_sales, label it.
+        Percent measures are already 0-100. Do not guess a definition that is not listed; say you cannot answer.
+        Personal data (names, emails, exact ages, locations) is not available and must not be inferred or invented.
+    cubes:
+      - join_path: order_items
+        includes:
+          - net_revenue
+          - gross_sales
+          - net_margin
+          - margin_pct
+          - orders
+          - orders_with_net_revenue
+          - avg_order_value
+          - returned_items
+          - non_cancelled_items
+          - return_rate
+          - status
+          - category
+          - created_at
+      - join_path: order_items.customers
+        includes:
+          - customers_with_orders
+          - repeat_customers
+          - repeat_share
+          - traffic_source
+          - country
+          - age_band

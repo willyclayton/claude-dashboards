@@ -1,0 +1,22 @@
+views:
+  - name: sales
+    cubes:
+      - join_path: order_items
+        includes:
+          - count
+          - order_count
+          - total_sale_price
+          - net_revenue
+          - orders_with_net_revenue
+          - avg_order_value
+          - status
+          - created_at
+      - join_path: order_items.inventory_items
+        includes:
+          - total_cost
+          - category
+      - join_path: order_items.users
+        includes:
+          - user_count
+          - traffic_source
+          - country

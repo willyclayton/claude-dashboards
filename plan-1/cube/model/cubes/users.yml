@@ -1,0 +1,21 @@
+cubes:
+  - name: users
+    sql_table: ACME_CO.SHOPIFY_ECOMM.USERS
+    public: false
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+      - name: traffic_source
+        sql: TRAFFIC_SOURCE
+        type: string
+      - name: country
+        sql: COUNTRY
+        type: string
+
+    measures:
+      - name: user_count
+        type: count_distinct
+        sql: ID

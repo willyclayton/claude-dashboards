@@ -1,0 +1,10 @@
+{"_note": "Independent Snowflake SQL (ANALYTICS_PROD.ECOMM, DBT_DEMO_ROLE) run 2026-10-27. Dates in this data are shifted +4 years vs Adrien's ACME_CO (his 2021 = our 2025).",
+ "q2_year": 2025,
+ "q1_net_revenue": 11618018.392610725,
+ "q2_orders": 81664,
+ "q3_aov": 47.379292258610782,
+ "q4_margin_pct": 52.201905701065876,
+ "q5_return_rate": 0.988345,
+ "q6_top5": "Jeans 1801850.17; Accessories 1076964.36; Outerwear & Coats 943922.14; Fashion Hoodies & Sweatshirts 850518.19; Tops & Tees 804746.02",
+ "q7_repeat_share": 47.823188,
+ "q8_top_sources": "Search 8589466.25; Organic 1798879.07"}

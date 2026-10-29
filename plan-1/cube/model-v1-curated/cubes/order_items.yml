@@ -1,0 +1,86 @@
+cubes:
+  - name: order_items
+    public: false
+    sql: >-
+      SELECT oi.ID, oi.ORDER_ID, oi.USER_ID, oi.STATUS, oi.CREATED_AT, oi.SALE_PRICE,
+             ii.COST AS UNIT_COST, ii.PRODUCT_CATEGORY AS CATEGORY
+      FROM ACME_CO.SHOPIFY_ECOMM.ORDER_ITEMS oi
+      LEFT JOIN ACME_CO.SHOPIFY_ECOMM.INVENTORY_ITEMS ii ON oi.INVENTORY_ITEM_ID = ii.ID
+
+    joins:
+      - name: customers
+        relationship: many_to_one
+        sql: "{CUBE}.USER_ID = {customers}.ID"
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+      - name: order_id
+        sql: ORDER_ID
+        type: number
+      - name: status
+        sql: STATUS
+        type: string
+        description: Item status (Complete, Shipped, Processing, Cancelled, Returned).
+      - name: category
+        sql: CATEGORY
+        type: string
+        description: Product category.
+      - name: created_at
+        sql: CREATED_AT
+        type: time
+        description: When the order was placed.
+
+    measures:
+      - name: net_revenue
+        type: sum
+        sql: SALE_PRICE
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled', 'Returned')"
+        description: >-
+          Revenue. Sale price of items that are neither Cancelled nor Returned.
+          This is what "revenue" and "sales" mean by default.
+      - name: gross_sales
+        type: sum
+        sql: SALE_PRICE
+        filters:
+          - sql: "{CUBE}.STATUS <> 'Cancelled'"
+        description: Sale price of items that are not Cancelled (Returned items still count). Label it as gross sales.
+      - name: net_margin
+        type: sum
+        sql: "SALE_PRICE - UNIT_COST"
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled', 'Returned')"
+        description: Sale price minus inventory unit cost on items that count toward net revenue.
+      - name: margin_pct
+        type: number
+        sql: "100.0 * {net_margin} / NULLIF({net_revenue}, 0)"
+        description: Gross margin percentage = net margin / net revenue, as a percentage (0-100).
+      - name: orders
+        type: count_distinct
+        sql: ORDER_ID
+        description: Distinct orders (an order can have several items), including cancelled ones.
+      - name: orders_with_net_revenue
+        type: count_distinct
+        sql: ORDER_ID
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled', 'Returned')"
+        description: Orders that have at least one item counting toward net revenue.
+      - name: avg_order_value
+        type: number
+        sql: "{net_revenue} / NULLIF({orders_with_net_revenue}, 0)"
+        description: Average order value = net revenue / orders with net revenue.
+      - name: returned_items
+        type: count
+        filters:
+          - sql: "{CUBE}.STATUS = 'Returned'"
+      - name: non_cancelled_items
+        type: count
+        filters:
+          - sql: "{CUBE}.STATUS <> 'Cancelled'"
+      - name: return_rate
+        type: number
+        sql: "100.0 * {returned_items} / NULLIF({non_cancelled_items}, 0)"
+        description: Return rate = Returned items / non-cancelled items (item level), as a percentage (0-100).

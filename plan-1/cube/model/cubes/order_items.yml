@@ -1,0 +1,52 @@
+cubes:
+  - name: order_items
+    sql_table: ACME_CO.SHOPIFY_ECOMM.ORDER_ITEMS
+    public: false
+
+    joins:
+      - name: users
+        relationship: many_to_one
+        sql: "{CUBE}.USER_ID = {users}.ID"
+      - name: inventory_items
+        relationship: many_to_one
+        sql: "{CUBE}.INVENTORY_ITEM_ID = {inventory_items}.ID"
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+      - name: order_id
+        sql: ORDER_ID
+        type: number
+      - name: status
+        sql: STATUS
+        type: string
+      - name: created_at
+        sql: CREATED_AT
+        type: time
+
+    measures:
+      - name: count
+        type: count
+      - name: order_count
+        type: count_distinct
+        sql: ORDER_ID
+      - name: total_sale_price
+        type: sum
+        sql: SALE_PRICE
+      - name: orders_with_net_revenue
+        type: count_distinct
+        sql: ORDER_ID
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled', 'Returned')"
+      - name: net_revenue
+        type: sum
+        sql: SALE_PRICE
+        filters:
+          - sql: "{CUBE}.STATUS NOT IN ('Cancelled', 'Returned')"
+        description: Revenue. Sale price of items that are neither Cancelled nor Returned. This is what "revenue" and "sales" mean by default.
+      - name: avg_order_value
+        type: number
+        sql: "{net_revenue} / NULLIF({orders_with_net_revenue}, 0)"
+        description: Average order value = net revenue divided by the number of orders that have net revenue.

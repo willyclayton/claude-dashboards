@@ -1,0 +1,18 @@
+cubes:
+  - name: inventory_items
+    sql_table: ACME_CO.SHOPIFY_ECOMM.INVENTORY_ITEMS
+    public: false
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+      - name: category
+        sql: PRODUCT_CATEGORY
+        type: string
+
+    measures:
+      - name: total_cost
+        type: sum
+        sql: COST

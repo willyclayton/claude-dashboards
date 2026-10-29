@@ -1,0 +1,54 @@
+# One row per user, with ONLY non-PII columns. Name, email, gender, exact age, city, state, zip, lat/long never enter the model.
+cubes:
+  - name: customers
+    public: false
+    sql: >-
+      SELECT u.ID, u.TRAFFIC_SOURCE, u.COUNTRY, u.CREATED_AT,
+             CASE WHEN u.AGE < 18 THEN 'Under 18' WHEN u.AGE < 25 THEN '18-24' WHEN u.AGE < 35 THEN '25-34'
+                  WHEN u.AGE < 45 THEN '35-44' WHEN u.AGE < 55 THEN '45-54' WHEN u.AGE < 65 THEN '55-64'
+                  ELSE '65+' END AS AGE_BAND,
+             COALESCE(o.NON_CANCELLED_ORDERS, 0) AS NON_CANCELLED_ORDERS
+      FROM ACME_CO.SHOPIFY_ECOMM.USERS u
+      LEFT JOIN (
+        SELECT USER_ID, COUNT(DISTINCT CASE WHEN STATUS <> 'Cancelled' THEN ORDER_ID END) AS NON_CANCELLED_ORDERS
+        FROM ACME_CO.SHOPIFY_ECOMM.ORDER_ITEMS GROUP BY USER_ID
+      ) o ON o.USER_ID = u.ID
+
+    dimensions:
+      - name: id
+        sql: ID
+        type: number
+        primary_key: true
+      - name: traffic_source
+        sql: TRAFFIC_SOURCE
+        type: string
+        description: How the customer first arrived (Search, Organic, Facebook, Email, Display).
+      - name: country
+        sql: COUNTRY
+        type: string
+      - name: age_band
+        sql: AGE_BAND
+        type: string
+        description: Age band. Exact age is not exposed.
+      - name: non_cancelled_orders
+        sql: NON_CANCELLED_ORDERS
+        type: number
+
+    measures:
+      - name: customers_with_orders
+        type: count_distinct
+        sql: ID
+        filters:
+          - sql: "{CUBE}.NON_CANCELLED_ORDERS >= 1"
+        description: Customers with at least one order that is not fully cancelled.
+      - name: repeat_customers
+        type: count_distinct
+        sql: ID
+        filters:
+          - sql: "{CUBE}.NON_CANCELLED_ORDERS >= 2"
+        description: Customers with 2 or more orders that are not fully cancelled.
+      - name: repeat_share
+        type: number
+        sql: "100.0 * {repeat_customers} / NULLIF({customers_with_orders}, 0)"
+        format: percent
+        description: Repeat customers divided by customers with at least one non-cancelled order, as a percentage (0-100).

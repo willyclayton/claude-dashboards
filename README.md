@@ -1,70 +1,42 @@
-# Claude Dashboards: semantic layer experiments
+# Claude + Cube semantic layer test
 
-**Question:** can Claude + Cube (free, open-source semantic layer) do what Omni's semantic layer does, and where does Omni still earn its keep?
+Can Claude Desktop give non-technical users trustworthy answers over Snowflake through Cube, measured with the same brief and questions Adrien used for dbt core (Omni later)?
 
-## Status at a glance (2026-10-20)
+## Status (2026-10-27)
 
-| | |
+Plan 1 is a clean restart. Cube runs on `ACME_CO` as a read-only role (access verified). The curated model scored 30 of 30 on Adrien's questions and is archived. A deliberately bare model is now live: next is 3 runs on it (expect misses), then add definitions, then 3 more runs.
+
+## Start here
+
+| I want to... | Go to |
 |---|---|
-| Cube model on live Snowflake | Done, 6/6 golden tests pass |
-| Claude Desktop → Cube over MCP | Working |
-| First Claude Dashboard on Cube | Built; tiles go through Cube |
-| 4-route bake-off (10 questions x 3 runs) | Done: Cube 100%, Omni 93% pointed at the Sales topic / 37% unguided, Claude alone 60% |
-| Security and metric-change tests | Done for Cube and Snowflake; Omni not yet tested |
-| Plan 2 (Claude improves Omni via Git) | Planned, not started |
+| Read the plan and phases | [plan-1/plan.md](plan-1/plan.md) |
+| **Start, check or fix Cube and the Claude connector yourself** | [plan-1/cube/CUBE-HELPER.md](plan-1/cube/CUBE-HELPER.md) |
+| Run Cube, tests, and see how to swap to ACME_CO | [plan-1/cube/README.md](plan-1/cube/README.md) |
+| Read the shared test brief (definitions, setup, questions, scoring) | [plan-1/test-brief.md](plan-1/test-brief.md) |
+| See or fill the 10 questions and expected answers | [plan-1/eval/adrien-question-set/questions.csv](plan-1/eval/adrien-question-set/questions.csv) |
+| Adrien's three experiments (curated, bare before, bare after) | [plan-1/eval/adrien-question-set/README.md](plan-1/eval/adrien-question-set/README.md) |
+| Trip-up question set (parked) | [plan-1/eval/trip-up-question-set/](plan-1/eval/trip-up-question-set/) |
+| **What we learned, written to speak to** (dashboards vs chat, accuracy, boundary, ops) | [plan-1/learnings.md](plan-1/learnings.md) |
+| Log effort and blockers | [plan-1/effort-log.csv](plan-1/effort-log.csv) |
+| Next steps from the 2026-10-28 sync (meeting prep, questions, checklist) | [plan-1/next-steps.md](plan-1/next-steps.md) |
+| Read the calls (2026-10-26 Adrien, 2026-10-28 sync) | [conversations/](conversations/) |
+| Look at anything earlier | [old/](old/) |
 
-## Do next
+## Open items
 
-1. Ask the data team: is `SALE_PRICE * 0.5` intended, which Omni topic is authoritative for revenue (two disagree 2x), and what is the return-rate denominator?
-2. Decide the `avg_margin` basis (average margin $24.18 is higher than average price $23.19).
-3. Close the open gaps in the findings: Omni restricted-user test, Omni business-user metric test, 25-50 questions, two independent scorers, hours and cost.
+1. Run experiment B: 3 runs of Adrien's 10 questions on the bare model.
+2. Confirm the Thursday 2026-10-29 deadline versus next week.
+3. Regenerate the Snowflake token (it was pasted in chat) when the lab is done.
 
-## Where everything is
-
-| I want to… | Go to |
-|---|---|
-| **Read the test results and evidence** | [docs/plan-1/findings.md](docs/plan-1/findings.md) |
-| See the scoring matrix (8 criteria x 4 routes) | [docs/plan-1/scoring-matrix.md](docs/plan-1/scoring-matrix.md) |
-| Open the filled-in grid and the **weighted score** (spreadsheet, editable weights) | [docs/plan-1/success-criteria-grid.xlsx](docs/plan-1/success-criteria-grid.xlsx) |
-| See the success criteria and North Star | [docs/plan-1/success-criteria.md](docs/plan-1/success-criteria.md) |
-| Read the Plan 1 plan, progress and risks | [docs/plan-1/plan.md](docs/plan-1/plan.md) |
-| See every task and its status | [docs/project-tracker.csv](docs/project-tracker.csv) |
-| Read what we learned and the gotchas | [docs/learnings.md](docs/learnings.md) |
-| **Read the Omni vs Claude + Cube write-up (end to end)** | [docs/plan-1/omni-vs-claude-cube.md](docs/plan-1/omni-vs-claude-cube.md) |
-| **See the pain of hosting the Cube MCP so a dashboard is live** (and the launch script) | [docs/plan-1/pain-log-hosting-the-cube-mcp.md](docs/plan-1/pain-log-hosting-the-cube-mcp.md) |
-| **Run the devil's-advocate demo by path (end user, data engineer, admin, change impact, consistency)** | [docs/plan-1/cube-vs-omni-demo-paths.md](docs/plan-1/cube-vs-omni-demo-paths.md) |
-| Run the Cube demo (build steps, 4 pitfalls, 30-min run-of-show, gap register) | [docs/plan-1/cube-demo-guide.md](docs/plan-1/cube-demo-guide.md) |
-| See 40 more criteria with test status | [docs/plan-1/additional-criteria.md](docs/plan-1/additional-criteria.md) |
-| Compare every Omni attribute with Cube | [docs/reference/omni-vs-cube-attributes.md](docs/reference/omni-vs-cube-attributes.md) |
-| Learn Docker and Cube basics | [docs/reference/docker-and-cube-101.md](docs/reference/docker-and-cube-101.md) |
-| Read the original Cube lab guide | [docs/reference/cube-core-claude-hands-on-lab.md](docs/reference/cube-core-claude-hands-on-lab.md) |
-| See the Plan 2 idea | [docs/plan-2/plan.md](docs/plan-2/plan.md) |
-| See screenshots of progress | [pics_along_the_way/](pics_along_the_way/) |
-
-## Run it
-
-```bash
-cd "Plan 1/cube-claude-lab"
-docker compose up -d                    # Cube at http://localhost:4000
-set -a && . ./.env && set +a
-.venv/bin/python tests/run_golden.py    # accuracy tests against Snowflake
-```
-
-Claude Desktop uses a copy of the MCP server in `~/.cube-mcp/` (macOS blocks Desktop-launched processes from reading `~/Desktop`; see [learnings](docs/learnings.md)). Fully quit and reopen Desktop after changing its config. To re-run the bake-off, see "Reproduce" in the [findings](docs/plan-1/findings.md).
-
-## Repo layout
+## Layout
 
 ```
-README.md                  this page: status, next steps, links
-docs/
-  plan-1/                  plan, findings, scoring matrix, success criteria
-  plan-2/                  Plan 2 plan
-  reference/               101 guide, Omni vs Cube attributes, original lab guide
-  learnings.md             running log of gotchas and lessons
-  project-tracker.csv      every task, status, owner, evidence
-Plan 1/                    code (kept in place: Docker and the venv depend on this path)
-  cube-claude-lab/         Cube model, docker-compose, MCP wrapper, golden tests
-  bakeoff/                 bake-off, security and metric-change scripts and results
-  omni-source/             the Omni topic the Cube model was ported from
-pics_along_the_way/        dated screenshots
+README.md
+plan-1/            current plan, test brief, eval templates, effort log
+conversations/     call transcripts
+old/               everything before the restart
+  docs/            old plans 1 and 2, findings, learnings, reference, tracker
+  code/            old Cube lab, MCP wrapper, bake-off scripts (secrets and venv inside, gitignored)
+  pics/            old screenshots
 ```
